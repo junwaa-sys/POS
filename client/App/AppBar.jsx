@@ -22,7 +22,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Stack from '@mui/material/Stack'
 
-function ResponsiveAppBar({ userDetails, setUserDetails }) {
+function ResponsiveAppBar({ userDetails, handleChange }) {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [showPassword, setShowPassword] = React.useState(false)
@@ -85,6 +85,7 @@ function ResponsiveAppBar({ userDetails, setUserDetails }) {
                     </InputAdornment>
                   }
                   label="UserID"
+                  onChange={handleChange}
                 />
               </FormControl>
               <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -107,6 +108,7 @@ function ResponsiveAppBar({ userDetails, setUserDetails }) {
                     </InputAdornment>
                   }
                   label="Password"
+                  onChange={handleChange}
                 />
               </FormControl>
               <Button>LOG IN</Button>

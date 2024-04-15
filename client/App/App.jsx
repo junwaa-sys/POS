@@ -13,6 +13,20 @@ const darkTheme = createTheme({
 
 export default function App() {
   const [userDetails, setUserDetails] = React.useState(null)
+  const userIdRef = React.useRef('')
+  const passwordRef = React.useRef('')
+
+  function handleChange(event) {
+    const value_type = event.target.id
+    const value = event.target.value
+    if (value_type === 'outlined-user-id') {
+      userIdRef.current = value
+    } else {
+      passwordRef.current = value
+    }
+  }
+
+  function handleLogin(loginDetails) {}
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -24,7 +38,9 @@ export default function App() {
             element={
               <NavBar
                 userDetails={userDetails}
-                setUserDetails={setUserDetails}
+                loginDetails={loginDetails}
+                handleChange={handleChange}
+                handleLogin={handleLogin}
               />
             }
           >
