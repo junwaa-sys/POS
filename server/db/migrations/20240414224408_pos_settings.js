@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable('receipt_settings', (table) => {
+  return knex.schema.createTable('pos_settings', (table) => {
     table.increments('id')
     table.string('logo_url')
     table.string('company_name')
@@ -11,6 +11,7 @@ exports.up = function (knex) {
     table.string('email')
     table.string('phone')
     table.string('policy')
+    table.integer('number_of_pos')
   })
 }
 
