@@ -12,12 +12,22 @@ const darkTheme = createTheme({
 })
 
 export default function App() {
+  const [userDetails, setUserDetails] = React.useState(null)
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<NavBar />}>
+          <Route
+            path="/"
+            element={
+              <NavBar
+                userDetails={userDetails}
+                setUserDetails={setUserDetails}
+              />
+            }
+          >
             <Route path="/pos" element={<Pos />} />
           </Route>
         </Routes>
