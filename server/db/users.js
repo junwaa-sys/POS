@@ -1,10 +1,7 @@
 const connection = require('./connection')
 
-function getUserDetails(loginId, loginPassword, db = connection) {
-  return db('users')
-    .select('*')
-    .where('id', loginId)
-    .andWhere('login_password', loginPassword)
+function getUserDetails(loginId, db = connection) {
+  return db('users').select('*').where('id', loginId)
 }
 
 function updatePassword(loginId, newPassword, db = connection) {
