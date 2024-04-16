@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useCookies } from 'react-cookie'
 import NavBar from './AppBar'
 import Pos from '../components/Pos'
 import * as apis from '../apis/logIn'
@@ -17,6 +18,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState(null)
   const [loginErr, setLoginErr] = React.useState(false)
   const [userDetails, setUserDetails] = React.useState(null)
+  const [cookie, setCookie] = useCookies('userId')
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
 
@@ -38,6 +40,7 @@ export default function App() {
           setLoginErr(true)
         } else {
           setLoggedInUser(res)
+          setCookie('userId', res.id)
         }
       })
       .catch((error) => {

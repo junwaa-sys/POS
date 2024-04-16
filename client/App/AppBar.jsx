@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import Login from '../components/users/Login'
 import EditUser from '../components/users/EditUser'
+import { Cookies } from 'react-cookie'
 
 function ResponsiveAppBar({
   loggedInUser,
@@ -28,6 +29,7 @@ function ResponsiveAppBar({
   const [showPassword, setShowPassword] = React.useState(false)
 
   const navigate = useNavigate()
+  const cookies = new Cookies()
 
   const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS', 'USERS']
   const settings = ['Account', 'Logout']
@@ -55,13 +57,14 @@ function ResponsiveAppBar({
     setAnchorElUser(null)
     if (event.target.innerHTML === 'Logout') {
       setLoggedInUser(null)
+      cookies.remove('userId')
     } else if (event.target.innerHTML === 'Account') {
       setUserDetails({ id: 1 })
       navigate('/users/edit')
     }
   }
 
-  if (loggedInUser === null) {
+  if (cookies.get('userId') === undefined) {
     return (
       <Login
         handleChange={handleChange}
