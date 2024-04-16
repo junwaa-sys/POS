@@ -5,7 +5,7 @@ function getUserList(db = connection) {
 }
 
 function getUserDetails(loginId, db = connection) {
-  return db('users').select('*').where('id', loginId)
+  return db('users').select('*').where('id', loginId).first()
 }
 
 function getLastUserId(db = connection) {

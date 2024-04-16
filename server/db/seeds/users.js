@@ -2,6 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
+
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('users').del()
@@ -22,7 +23,7 @@ exports.seed = async function (knex) {
       email: 'hello',
       first_name: 'admin',
       last_name: 'admin',
-      password: 'admin',
+      password: '$2b$10$ttJCET3qAO1BJuInvXajj..guQWblsgdiHkIgYYrKyOp3whRpOw0i',
       role: 'admin',
       access_level: 1,
       created_by_id: 1,

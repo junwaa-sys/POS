@@ -14,6 +14,7 @@ const darkTheme = createTheme({
 
 export default function App() {
   const [userDetails, setUserDetails] = React.useState(null)
+  const [loginErr, setLoginErr] = React.useState(false)
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
 
@@ -27,9 +28,20 @@ export default function App() {
     }
   }
 
-  async function handleLogin() {
-    const userInfos = await apis.getUserDetails(userIdRef.current)
-    console.log('login in app')
+  function handleLogin(event) {
+    console.log(event)
+    apis
+      .getUserDetails(userIdRef.current, passwordRef.current)
+      .then((res) => {
+        if (res.error) {
+          setLoginErr(true)
+        } else {
+          setUserDetails(res)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   return (
@@ -44,6 +56,8 @@ export default function App() {
                 userDetails={userDetails}
                 handleChange={handleChange}
                 handleLogin={handleLogin}
+                setUserDetails={setUserDetails}
+                loginErr={loginErr}
               />
             }
           >

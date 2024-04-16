@@ -12,8 +12,9 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Stack from '@mui/material/Stack'
+import { TextField, Typography } from '@mui/material'
 
-function Login({ handleChange, handleLogin }) {
+function Login({ handleChange, handleLogin, loginErr }) {
   const [showPassword, setShowPassword] = React.useState(false)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
@@ -40,42 +41,62 @@ function Login({ handleChange, handleLogin }) {
         >
           <Stack spacing={2}>
             <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-              <InputLabel htmlFor="outlined-user-id">User ID</InputLabel>
-              <OutlinedInput
+              <TextField
+                required
+                error={loginErr}
                 id="outlined-user-id"
                 type={'text'}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <AccountCircle />
-                  </InputAdornment>
-                }
-                label="UserID"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }}
+                label="USER ID"
                 onChange={handleChange}
               />
             </FormControl>
             <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">
-                Password
-              </InputLabel>
-              <OutlinedInput
+              <TextField
+                required
+                label="PASSWORD"
+                error={loginErr}
                 id="outlined-adornment-password"
                 type={showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleLogin()
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 onChange={handleChange}
               />
             </FormControl>
+            {loginErr ? (
+              <Typography
+                variant="caption"
+                align="center"
+                sx={{ color: 'red' }}
+              >
+                Incorrect User ID / Password!
+              </Typography>
+            ) : (
+              ''
+            )}
             <Button onClick={handleLogin}>LOG IN</Button>
           </Stack>
         </Grid>

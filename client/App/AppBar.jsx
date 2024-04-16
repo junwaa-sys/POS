@@ -23,7 +23,13 @@ import AccountCircle from '@mui/icons-material/AccountCircle'
 import Stack from '@mui/material/Stack'
 import Login from '../components/users/Login'
 
-function ResponsiveAppBar({ userDetails, handleChange, handleLogin }) {
+function ResponsiveAppBar({
+  userDetails,
+  handleChange,
+  handleLogin,
+  loginErr,
+  setUserDetails,
+}) {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [showPassword, setShowPassword] = React.useState(false)
@@ -48,12 +54,21 @@ function ResponsiveAppBar({ userDetails, handleChange, handleLogin }) {
     setAnchorElNav(null)
   }
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (event) => {
     setAnchorElUser(null)
+    if (event.target.innerHTML === 'Logout') {
+      setUserDetails(null)
+    }
   }
 
   if (userDetails === null) {
-    return <Login handleChange={handleChange} handleLogin={handleLogin} />
+    return (
+      <Login
+        handleChange={handleChange}
+        handleLogin={handleLogin}
+        loginErr={loginErr}
+      />
+    )
   } else {
     return (
       <>
