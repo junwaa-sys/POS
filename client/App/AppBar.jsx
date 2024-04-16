@@ -57,14 +57,15 @@ function ResponsiveAppBar({
     setAnchorElUser(null)
     if (event.target.innerHTML === 'Logout') {
       setLoggedInUser(null)
-      cookies.remove('userId')
+      cookies.remove('loggedInUser')
+      navigate('/')
     } else if (event.target.innerHTML === 'Account') {
-      setUserDetails({ id: 1 })
+      setUserDetails(cookies.get('loggedInUser'))
       navigate('/users/edit')
     }
   }
 
-  if (cookies.get('userId') === undefined) {
+  if (cookies.get('loggedInUser') === undefined) {
     return (
       <Login
         handleChange={handleChange}

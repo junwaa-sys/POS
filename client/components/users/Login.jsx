@@ -13,12 +13,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Stack from '@mui/material/Stack'
 import { TextField, Typography } from '@mui/material'
-import { Cookies } from 'react-cookie'
 
 function Login({ handleChange, handleLogin, loginErr }) {
   const [showPassword, setShowPassword] = React.useState(false)
-  const cookies = new Cookies()
-  console.log(cookies.get('userId'))
   const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const handleMouseDownPassword = (event) => {

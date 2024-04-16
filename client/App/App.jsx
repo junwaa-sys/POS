@@ -18,7 +18,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState(null)
   const [loginErr, setLoginErr] = React.useState(false)
   const [userDetails, setUserDetails] = React.useState(null)
-  const [cookie, setCookie] = useCookies('userId')
+  const [cookie, setCookie] = useCookies('loggedInUser')
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
 
@@ -40,7 +40,7 @@ export default function App() {
           setLoginErr(true)
         } else {
           setLoggedInUser(res)
-          setCookie('userId', res.id)
+          setCookie('loggedInUser', res)
         }
       })
       .catch((error) => {
