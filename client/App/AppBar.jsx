@@ -21,13 +21,14 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Stack from '@mui/material/Stack'
+import Login from '../components/users/Login'
 
 function ResponsiveAppBar({ userDetails, handleChange, handleLogin }) {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [showPassword, setShowPassword] = React.useState(false)
 
-  const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS']
+  const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS', 'USERS']
   const settings = ['Account', 'Logout']
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
@@ -52,66 +53,7 @@ function ResponsiveAppBar({ userDetails, handleChange, handleLogin }) {
   }
 
   if (userDetails === null) {
-    return (
-      <>
-        <Box
-          display="flex"
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100vh',
-          }}
-        >
-          <Grid
-            container
-            justifyContent="center"
-            alignItems="center"
-            direction="column"
-          >
-            <Stack spacing={2}>
-              <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                <InputLabel htmlFor="outlined-user-id">User ID</InputLabel>
-                <OutlinedInput
-                  id="outlined-user-id"
-                  type={'text'}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <AccountCircle />
-                    </InputAdornment>
-                  }
-                  label="UserID"
-                  onChange={handleChange}
-                />
-              </FormControl>
-              <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">
-                  Password
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-password"
-                  type={showPassword ? 'text' : 'password'}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  label="Password"
-                  onChange={handleChange}
-                />
-              </FormControl>
-              <Button onClick={handleLogin}>LOG IN</Button>
-            </Stack>
-          </Grid>
-        </Box>
-      </>
-    )
+    return <Login handleChange={handleChange} handleLogin={handleLogin} />
   } else {
     return (
       <>

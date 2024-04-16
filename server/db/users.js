@@ -1,5 +1,9 @@
 const connection = require('./connection')
 
+function getUserList(db = connection) {
+  return db('users').select('*')
+}
+
 function getUserDetails(loginId, db = connection) {
   return db('users').select('*').where('id', loginId)
 }
@@ -49,4 +53,5 @@ module.exports = {
   addUser,
   deleteUser,
   getLastUserId,
+  getUserList,
 }

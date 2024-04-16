@@ -1,6 +1,6 @@
 export async function getUserDetails(userId) {
   try {
-    const response = await fetch(`api/users/get`, {
+    const response = await fetch(`api/users/get/details`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

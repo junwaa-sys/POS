@@ -13,3 +13,8 @@ export async function getLastUserId() {
     console.log(error)
   }
 }
+
+export async function getUserList() {
+  try {
+  } catch (error) {}
+}
