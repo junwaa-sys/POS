@@ -5,6 +5,7 @@ import Pos from '../components/Pos'
 import * as apis from '../apis/logIn'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
+import EditUser from '../components/users/EditUser'
 
 const darkTheme = createTheme({
   palette: {
@@ -13,8 +14,9 @@ const darkTheme = createTheme({
 })
 
 export default function App() {
-  const [userDetails, setUserDetails] = React.useState(null)
+  const [loggedInUser, setLoggedInUser] = React.useState(null)
   const [loginErr, setLoginErr] = React.useState(false)
+  const [userDetails, setUserDetails] = React.useState(null)
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
 
@@ -29,14 +31,13 @@ export default function App() {
   }
 
   function handleLogin(event) {
-    console.log(event)
     apis
       .getUserDetails(userIdRef.current, passwordRef.current)
       .then((res) => {
         if (res.error) {
           setLoginErr(true)
         } else {
-          setUserDetails(res)
+          setLoggedInUser(res)
         }
       })
       .catch((error) => {
@@ -53,16 +54,20 @@ export default function App() {
             path="/"
             element={
               <NavBar
-                userDetails={userDetails}
+                loggedInUser={loggedInUser}
                 handleChange={handleChange}
                 handleLogin={handleLogin}
-                setUserDetails={setUserDetails}
+                setLoggedInUser={setLoggedInUser}
                 loginErr={loginErr}
+                setUserDetails={setUserDetails}
               />
             }
-          >
-            <Route path="/pos" element={<Pos />} />
-          </Route>
+          />
+          <Route path="/pos" element={<Pos />} />
+          <Route
+            path="/users/edit"
+            element={<EditUser userDetails={userDetails} />}
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -46,14 +46,8 @@ function Login({ handleChange, handleLogin, loginErr }) {
                 error={loginErr}
                 id="outlined-user-id"
                 type={'text'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <AccountCircle />
-                    </InputAdornment>
-                  ),
-                }}
                 label="USER ID"
+                autoFocus={true}
                 onChange={handleChange}
               />
             </FormControl>

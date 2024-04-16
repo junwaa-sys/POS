@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -12,27 +12,22 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
-import Grid from '@mui/material/Grid'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputAdornment from '@mui/material/InputAdornment'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import AccountCircle from '@mui/icons-material/AccountCircle'
-import Stack from '@mui/material/Stack'
 import Login from '../components/users/Login'
+import EditUser from '../components/users/EditUser'
 
 function ResponsiveAppBar({
-  userDetails,
+  loggedInUser,
   handleChange,
   handleLogin,
   loginErr,
+  setLoggedInUser,
   setUserDetails,
 }) {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [showPassword, setShowPassword] = React.useState(false)
+
+  const navigate = useNavigate()
 
   const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS', 'USERS']
   const settings = ['Account', 'Logout']
@@ -57,11 +52,14 @@ function ResponsiveAppBar({
   const handleCloseUserMenu = (event) => {
     setAnchorElUser(null)
     if (event.target.innerHTML === 'Logout') {
-      setUserDetails(null)
+      setLoggedInUser(null)
+    } else if (event.target.innerHTML === 'Account') {
+      setUserDetails({ id: 1 })
+      navigate('/users/edit')
     }
   }
 
-  if (userDetails === null) {
+  if (loggedInUser === null) {
     return (
       <Login
         handleChange={handleChange}
