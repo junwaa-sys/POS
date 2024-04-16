@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import NavBar from './AppBar'
 import Pos from '../components/Pos'
+import * as apis from '../apis/logIn'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
@@ -26,7 +27,10 @@ export default function App() {
     }
   }
 
-  function handleLogin(loginDetails) {}
+  async function handleLogin() {
+    const userInfos = await apis.getUserDetails(userIdRef.current)
+    console.log('login in app')
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -38,7 +42,6 @@ export default function App() {
             element={
               <NavBar
                 userDetails={userDetails}
-                loginDetails={loginDetails}
                 handleChange={handleChange}
                 handleLogin={handleLogin}
               />

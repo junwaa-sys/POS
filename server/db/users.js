@@ -4,6 +4,10 @@ function getUserDetails(loginId, db = connection) {
   return db('users').select('*').where('id', loginId)
 }
 
+function getLastUserId(db = connection) {
+  return db('users').max('id')
+}
+
 function updatePassword(loginId, newPassword, db = connection) {
   return db('users').update('login_password', newPassword).where('id', loginId)
 }
