@@ -45,8 +45,10 @@ function ResponsiveAppBar({
     setAnchorElUser(event.currentTarget)
   }
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (event) => {
     setAnchorElNav(null)
+    const linkTo = event.target.innerText.toLowerCase()
+    navigate(`/${linkTo}`)
   }
 
   const handleCloseUserMenu = (event) => {

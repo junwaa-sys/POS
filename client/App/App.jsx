@@ -62,12 +62,13 @@ export default function App() {
                 setUserDetails={setUserDetails}
               />
             }
-          />
-          <Route path="/pos" element={<Pos />} />
-          <Route
-            path="/users/edit"
-            element={<EditUser userDetails={userDetails} />}
-          />
+          >
+            <Route path="/pos" element={<Pos />} />
+            <Route
+              path="/users/edit"
+              element={<EditUser userDetails={userDetails} />}
+            />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
