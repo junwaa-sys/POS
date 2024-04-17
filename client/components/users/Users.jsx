@@ -16,13 +16,14 @@ import FirstPageIcon from '@mui/icons-material/FirstPage'
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import LastPageIcon from '@mui/icons-material/LastPage'
-import { TableHead } from '@mui/material'
+import { Container, TableHead, TextField, Grid } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
 export default function Users({ setUserDetails }) {
   const [userList, setUserList] = React.useState(null)
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [searchName, setSearchName] = React.useState('')
 
   const navigate = useNavigate()
 
@@ -37,7 +38,17 @@ export default function Users({ setUserDetails }) {
       })
   }, [])
 
-  const rows = userList
+  const filteredUserList = userList?.filter((user) => {
+    if (
+      `${user.first_name}${user.last_name}`
+        .toLowerCase()
+        .includes(searchName.toLowerCase())
+    ) {
+      return user
+    }
+  })
+
+  const rows = filteredUserList
     ?.map((user) => {
       return createData(
         user.id,
@@ -50,6 +61,10 @@ export default function Users({ setUserDetails }) {
     })
     .sort((a, b) => (a.id < b.id ? -1 : 1))
 
+  function handleSearchName(event) {
+    const searchValue = event.target.value
+    setSearchName(searchValue)
+  }
   function TablePaginationActions(props) {
     const theme = useTheme()
     const { count, page, rowsPerPage, onPageChange } = props
@@ -145,81 +160,96 @@ export default function Users({ setUserDetails }) {
     return <p>Loading...</p>
   } else {
     return (
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 450 }} aria-label="custom pagination table">
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell align="left">NAME</TableCell>
-              <TableCell align="left">ROLE</TableCell>
-              <TableCell align="left">EMAIL</TableCell>
-              <TableCell align="left">PHONE</TableCell>
-              <TableCell align="left">ACCESS LEVEL</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row) => (
-              <TableRow
-                key={row.id}
-                onClick={(e) => {
-                  handleRowClick(row.id)
-                }}
-                hover
-                sx={{ ':hover': { cursor: 'pointer' } }}
-              >
-                <TableCell style={{ width: 50 }} component="th" scope="row">
-                  {row.id}
-                </TableCell>
-                <TableCell style={{ width: 100 }} align="left">
-                  {row.name}
-                </TableCell>
-                <TableCell style={{ width: 100 }} align="left">
-                  {row.role}
-                </TableCell>
-                <TableCell style={{ width: 100 }} align="left">
-                  {row.email}
-                </TableCell>
-                <TableCell style={{ width: 50 }} align="left">
-                  {row.phone}
-                </TableCell>
-                <TableCell style={{ width: 50 }} align="left">
-                  {row.accessLevel}
-                </TableCell>
+      <>
+        <Grid container justifyContent="flex-end" sx={{ marginBottom: '20px' }}>
+          <TextField
+            id="search-name"
+            label="Search Name"
+            size="small"
+            onChange={handleSearchName}
+            value={searchName}
+          />
+        </Grid>
+
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 450 }} aria-label="custom pagination table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell align="right">NAME</TableCell>
+                <TableCell align="right">ROLE</TableCell>
+                <TableCell align="right">EMAIL</TableCell>
+                <TableCell align="right">PHONE</TableCell>
+                <TableCell align="right">ACCESS LEVEL</TableCell>
               </TableRow>
-            ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={3}
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                slotProps={{
-                  select: {
-                    inputProps: {
-                      'aria-label': 'rows per page',
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0
+                ? rows.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : rows
+              ).map((row) => (
+                <TableRow
+                  key={row.id}
+                  onClick={(e) => {
+                    handleRowClick(row.id)
+                  }}
+                  hover
+                  sx={{ ':hover': { cursor: 'pointer' } }}
+                >
+                  <TableCell style={{ width: 50 }} component="th" scope="row">
+                    {row.id}
+                  </TableCell>
+                  <TableCell style={{ width: 100 }} align="right">
+                    {row.name}
+                  </TableCell>
+                  <TableCell style={{ width: 100 }} align="right">
+                    {row.role}
+                  </TableCell>
+                  <TableCell style={{ width: 100 }} align="right">
+                    {row.email}
+                  </TableCell>
+                  <TableCell style={{ width: 50 }} align="right">
+                    {row.phone}
+                  </TableCell>
+                  <TableCell style={{ width: 50 }} align="right">
+                    {row.accessLevel}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                  colSpan={6}
+                  count={rows.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  slotProps={{
+                    select: {
+                      inputProps: {
+                        'aria-label': 'rows per page',
+                      },
+                      native: true,
                     },
-                    native: true,
-                  },
-                }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
+                  }}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </>
     )
   }
 }
