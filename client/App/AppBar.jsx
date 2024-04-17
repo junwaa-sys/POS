@@ -61,7 +61,7 @@ function ResponsiveAppBar({
       navigate('/')
     } else if (event.target.innerHTML === 'Account') {
       setUserDetails(cookies.get('loggedInUser'))
-      navigate('/users/edit')
+      navigate('/users-edit')
     }
   }
 

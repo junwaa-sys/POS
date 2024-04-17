@@ -68,7 +68,7 @@ export default function App() {
           >
             <Route path="/pos" element={<Pos />} />
             <Route
-              path="/users/edit"
+              path="/users-edit"
               element={<EditUser userDetails={userDetails} />}
             />
           </Route>

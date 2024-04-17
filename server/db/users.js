@@ -12,8 +12,8 @@ function getLastUserId(db = connection) {
   return db('users').max('id')
 }
 
-function updatePassword(loginId, newPassword, db = connection) {
-  return db('users').update('login_password', newPassword).where('id', loginId)
+async function updatePassword(userId, newHashedPassword, db = connection) {
+  return db('users').update('password', newHashedPassword).where('id', userId)
 }
 
 function addUser(addingUser, userDetails, db = connection) {
