@@ -159,7 +159,9 @@ function ResponsiveAppBar({
             </Toolbar>
           </Container>
         </AppBar>
-        <Outlet />
+        <Container sx={{ paddingTop: '30px' }}>
+          <Outlet />
+        </Container>
       </>
     )
   }

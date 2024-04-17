@@ -1,45 +1,104 @@
 import React from 'react'
 import { Cookies } from 'react-cookie'
-import { Box, Container, Grid, TextField } from '@mui/material'
+import { Box, Button, Grid, TextField } from '@mui/material'
 
 export default function EditUser(userDetails) {
   const detailsToEdit = userDetails.userDetails
-  const cookies = new Cookies()
-
+  function handleSubmit(event) {
+    event.preventDefault()
+    console.log('submit')
+  }
   return (
-    <Container sx={{ height: '100vh', padding: '10px' }}>
-      <Grid>
-        <TextField
-          id="user-id"
-          label="USER ID"
-          InputProps={{
-            readOnly: true,
-          }}
-          defaultValue={detailsToEdit.id}
-        />
-        <TextField id="user-first-name" label="First Name" />
-        <TextField id="user-last-name" label="Last Name" />
-        <Box>
-          <Grid>
-            <TextField id="user-password" label="Password" type="password" />
-            <TextField id="new-password" label="New Password" type="password" />
+    <form onSubmit={handleSubmit}>
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="flex-start"
+        rowSpacing={2}
+        columnSpacing={2}
+      >
+        <Grid item xs={6}>
+          <TextField
+            id="user-id"
+            label="USER ID"
+            InputProps={{
+              disabled: true,
+            }}
+            defaultValue={detailsToEdit.id}
+            size="small"
+          />
+        </Grid>
+        <Grid item>
+          <Box p={1} sx={{ border: '1px solid grey' }}>
+            <Grid container direction="column" rowSpacing={2} columnSpacing={2}>
+              <Grid item>
+                <TextField
+                  id="old-password"
+                  label="Old Password"
+                  type="password"
+                  size="small"
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="new-password"
+                  label="New Password"
+                  type="password"
+                  size="small"
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="confirm-password"
+                  label="Confirm Password"
+                  type="password"
+                  size="small"
+                />
+              </Grid>
+              <Grid item>
+                <Button>Reset Password</Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid item>
+          <TextField
+            required
+            id="user-first-name"
+            label="First Name"
+            size="small"
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            required
+            id="user-last-name"
+            label="Last Name"
+            size="small"
+          />
+        </Grid>
+        <Grid item>
+          <TextField required id="role" label="Role" size="small" />
+        </Grid>
+
+        {detailsToEdit.access_level <= 1 ? (
+          <Grid item>
             <TextField
-              id="confirm-password"
-              label="Confirm Password"
-              type="password"
+              id="access-level"
+              label="Access Level"
+              defaultValue={detailsToEdit.access_level}
+              size="small"
             />
           </Grid>
-        </Box>
-        {detailsToEdit.access_level < 1 ? (
-          <TextField
-            id="access-level"
-            label="Access Level"
-            defaultValue={detailsToEdit.access_level}
-          />
         ) : (
           ''
         )}
+        <Grid item>
+          <Button type="submit">SAVE</Button>
+          <Button>CANCEL</Button>
+        </Grid>
       </Grid>
-    </Container>
+    </form>
   )
 }
