@@ -7,6 +7,7 @@ import * as apis from '../apis/logIn'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import EditUser from '../components/users/EditUser'
+import Users from '../components/users/Users'
 
 const darkTheme = createTheme({
   palette: {
@@ -70,6 +71,10 @@ export default function App() {
             <Route
               path="/users-edit"
               element={<EditUser userDetails={userDetails} />}
+            />
+            <Route
+              path="/users"
+              element={<Users setUserDetails={setUserDetails} />}
             />
           </Route>
         </Routes>
