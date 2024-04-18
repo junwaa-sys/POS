@@ -71,4 +71,19 @@ router.put('/update-password', async (req, res) => {
   }
 })
 
+router.put('/update-details', async (req, res) => {
+  const { modifyingUser, detailsToEdit } = req.body.updateDetails
+  const userId = detailsToEdit.id
+  try {
+    const response = await db.updateUserDetails(
+      userId,
+      detailsToEdit,
+      modifyingUser
+    )
+    res.json(response)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 module.exports = router

@@ -5,7 +5,19 @@ function getUserList(db = connection) {
 }
 
 function getUserDetails(loginId, db = connection) {
-  return db('users').select('*').where('id', loginId).first()
+  return db('users')
+    .select(
+      'id',
+      'email',
+      'phone',
+      'password',
+      'first_name as firstName',
+      'last_name as lastName',
+      'role',
+      'access_level as accessLevel'
+    )
+    .where('id', loginId)
+    .first()
 }
 
 function getLastUserId(db = connection) {
@@ -36,9 +48,12 @@ function updateUserDetails(
   return db('users')
     .update({
       email: newDetails.email,
+      phone: newDetails.phone,
       first_name: newDetails.firstName,
       last_name: newDetails.lastName,
-      modified_by_id: modifyingUser.id,
+      role: newDetails.role,
+      access_level: newDetails.accessLevel,
+      modified_by_id: modifyingUser,
     })
     .where('id', loginId)
 }

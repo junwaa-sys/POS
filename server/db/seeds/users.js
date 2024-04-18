@@ -12,7 +12,8 @@ exports.seed = async function (knex) {
       email: 'hello',
       first_name: 'super admin',
       last_name: 'super admin',
-      password: 'superadmin',
+      phone: '000000',
+      password: '$2b$10$ttJCET3qAO1BJuInvXajj..guQWblsgdiHkIgYYrKyOp3whRpOw0i',
       role: 'super admin',
       access_level: 0,
       created_by_id: 1,
@@ -21,6 +22,7 @@ exports.seed = async function (knex) {
     {
       id: 2,
       email: 'hello',
+      phone: '000000',
       first_name: 'admin',
       last_name: 'admin',
       password: '$2b$10$ttJCET3qAO1BJuInvXajj..guQWblsgdiHkIgYYrKyOp3whRpOw0i',
@@ -32,6 +34,7 @@ exports.seed = async function (knex) {
     {
       id: 3,
       email: 'hello',
+      phone: '000000',
       first_name: 'sales',
       last_name: 'sales',
       password: 'sales',

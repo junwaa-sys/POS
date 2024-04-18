@@ -60,3 +60,19 @@ export async function loadUserDetails(userId) {
     console.log(error)
   }
 }
+
+export async function updateUserDetails(updateDetails) {
+  console.log('api')
+  try {
+    const response = await fetch('api/users/update-details', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ updateDetails }),
+    })
+    const json = await response.json()
+  } catch (error) {
+    console.log(error)
+  }
+}
