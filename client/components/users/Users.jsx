@@ -16,14 +16,23 @@ import FirstPageIcon from '@mui/icons-material/FirstPage'
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import LastPageIcon from '@mui/icons-material/LastPage'
-import { Container, TableHead, TextField, Grid } from '@mui/material'
+import {
+  Container,
+  TableHead,
+  TextField,
+  Grid,
+  Backdrop,
+  CircularProgress,
+  Button,
+} from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-export default function Users({ setUserDetails }) {
+export default function Users({ setUserDetails, setIsNew }) {
   const [userList, setUserList] = React.useState(null)
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [searchName, setSearchName] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(true)
 
   const navigate = useNavigate()
 
@@ -32,6 +41,7 @@ export default function Users({ setUserDetails }) {
       .getUserList()
       .then((result) => {
         setUserList(result)
+        setIsLoading(false)
       })
       .catch((err) => {
         console.log(error)
@@ -153,15 +163,35 @@ export default function Users({ setUserDetails }) {
   async function handleRowClick(userId) {
     const response = await apis.loadUserDetails(userId)
     setUserDetails(response)
+    setIsNew(false)
+    navigate('/users-edit')
+  }
+
+  async function handleClick() {
+    setIsNew(true)
     navigate('/users-edit')
   }
 
   if (!rows) {
-    return <p>Loading...</p>
+    return (
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
   } else {
     return (
       <>
-        <Grid container justifyContent="flex-end" sx={{ marginBottom: '20px' }}>
+        <Grid
+          container
+          justifyContent="space-between"
+          sx={{ marginBottom: '20px' }}
+        >
+          <Button variant="outlined" onClick={handleClick}>
+            New
+          </Button>
           <TextField
             id="search-name"
             label="Search Name"

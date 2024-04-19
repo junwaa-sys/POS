@@ -86,4 +86,23 @@ router.put('/update-details', async (req, res) => {
   }
 })
 
+router.get('/get-last-id', async (req, res) => {
+  try {
+    const response = await db.getLastUserId()
+    res.json(response)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.put('/reset-password', async (req, res) => {
+  try {
+    const { userId } = req.body
+    const response = await db.resetPassword(userId)
+    res.json(response)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 module.exports = router

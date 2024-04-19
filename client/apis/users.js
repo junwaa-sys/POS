@@ -62,7 +62,6 @@ export async function loadUserDetails(userId) {
 }
 
 export async function updateUserDetails(updateDetails) {
-  console.log('api')
   try {
     const response = await fetch('api/users/update-details', {
       method: 'PUT',
@@ -72,6 +71,23 @@ export async function updateUserDetails(updateDetails) {
       body: JSON.stringify({ updateDetails }),
     })
     const json = await response.json()
+    return json
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function resetPassword(userId) {
+  try {
+    const response = await fetch('api/users/reset-password', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    })
+    const json = await response.json()
+    return json
   } catch (error) {
     console.log(error)
   }

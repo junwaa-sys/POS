@@ -1,4 +1,5 @@
 const connection = require('./connection')
+const bcrypt = require('bcrypt')
 
 function getUserList(db = connection) {
   return db('users').select('*')
@@ -21,7 +22,7 @@ function getUserDetails(loginId, db = connection) {
 }
 
 function getLastUserId(db = connection) {
-  return db('users').max('id')
+  return db('users').max('id as lastId')
 }
 
 async function updatePassword(userId, newHashedPassword, db = connection) {
@@ -61,6 +62,16 @@ function updateUserDetails(
 function deleteUser(userId, db = connectino) {
   return db('users').del().where('id', userId)
 }
+
+async function resetPassword(userId, db = connection) {
+  const saltRound = 10
+  const hashedPwd = await bcrypt.hash('password', saltRound)
+  return db('users')
+    .update({ password: hashedPwd })
+    .where('id', userId)
+    .returning('id')
+}
+
 module.exports = {
   getUserDetails,
   updatePassword,
@@ -69,4 +80,5 @@ module.exports = {
   deleteUser,
   getLastUserId,
   getUserList,
+  resetPassword,
 }

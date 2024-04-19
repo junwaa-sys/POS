@@ -19,8 +19,9 @@ import {
   DialogActions,
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
+import ResetPasswordForm from './ResetPasswordForm'
 
-export default function EditUser(userDetails) {
+export default function EditUser({ userDetails, isNew }) {
   const [oldPassword, setOldPassword] = React.useState('')
   const [newPassword, setNewPassword] = React.useState('')
   const [alertOpen, setAlertOpen] = React.useState(false)
@@ -29,17 +30,37 @@ export default function EditUser(userDetails) {
   const [alertMessage, setAlertMessage] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
   const [detailsToEdit, setDetailsToEdit] = React.useState(null)
+  const [newId, setNewId] = React.useState(null)
   const [notificationOpen, setNotificationOpen] = React.useState(false)
   const [notificationType, setNotificationType] = React.useState('')
   const [notificationText, setNotificationText] = React.useState('')
   const [notificationTitle, setNotificationTitle] = React.useState('')
+  const [loggedInUser, setLoggedInUser] = React.useState('')
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
+  const [email, setEmail] = React.useState('')
+  const [phone, setPhone] = React.useState('')
+  const [role, setRole] = React.useState('')
+  const [accessLevel, setAccessLevel] = React.useState('')
+  const cookies = new Cookies()
 
   React.useEffect(() => {
-    setDetailsToEdit(userDetails.userDetails)
+    setLoggedInUser(cookies.get('loggedInUser'))
+    if (!isNew) {
+      setDetailsToEdit(userDetails)
+    } else {
+      apis
+        .getLastUserId()
+        .then((res) => {
+          setNewId(res.lastId + 1)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
   }, [])
 
   const navigate = useNavigate()
-  const cookies = new Cookies()
 
   function handlePasswordChange(event) {
     const passwordType = event.target.id
@@ -78,6 +99,17 @@ export default function EditUser(userDetails) {
     }
   }
 
+  function handlePasswordReset() {
+    apis
+      .resetPassword(detailsToEdit.id)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
   function handleDetailsChange(event) {
     const dataName = event.target.id
     const value = event.target.value
@@ -95,7 +127,6 @@ export default function EditUser(userDetails) {
 
   function handleSubmit(event) {
     event.preventDefault()
-    const loggedInUser = cookies.get('loggedInUser')
     const modifyingUser = loggedInUser.id
     apis
       .updateUserDetails({ detailsToEdit, modifyingUser })
@@ -122,7 +153,7 @@ export default function EditUser(userDetails) {
     setNotificationOpen(false)
   }
 
-  if (detailsToEdit === null) {
+  if (!isNew & (detailsToEdit === null)) {
     return <p>Data is not available</p>
   } else {
     return (
@@ -205,122 +236,99 @@ export default function EditUser(userDetails) {
             {successMessage}
           </Alert>
         </Collapse>
-        <form onSubmit={handleSubmit}>
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="flex-start"
-            rowSpacing={2}
-            columnSpacing={2}
-          >
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="flex-start"
+          rowSpacing={2}
+          columnSpacing={2}
+        >
+          <Grid item xs={6}>
+            <TextField
+              id="user-id"
+              label="USER ID"
+              InputProps={{
+                disabled: true,
+              }}
+              defaultValue={!isNew ? detailsToEdit.id : newId}
+              size="small"
+            />
+          </Grid>
+          {!isNew ? (
             <Grid item xs={6}>
-              <TextField
-                id="user-id"
-                label="USER ID"
-                InputProps={{
-                  disabled: true,
-                }}
-                defaultValue={detailsToEdit.id}
-                size="small"
+              <ResetPasswordForm
+                handlePasswordChange={handlePasswordChange}
+                oldPassword={oldPassword}
+                newPassword={newPassword}
+                confirmPassword={confirmPassword}
+                handlePasswordUpdate={handlePasswordUpdate}
+                loggedInUserId={loggedInUser}
+                userId={detailsToEdit?.id}
+                handlePasswordReset={handlePasswordReset}
               />
             </Grid>
-            <Grid item>
-              <Box p={1} sx={{ border: '1px solid grey' }}>
-                <Grid
-                  container
-                  direction="column"
-                  rowSpacing={2}
-                  columnSpacing={2}
-                >
-                  <Grid item>
-                    <TextField
-                      id="old-password"
-                      label="Old Password"
-                      type="password"
-                      size="small"
-                      onChange={handlePasswordChange}
-                      value={oldPassword}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      id="new-password"
-                      label="New Password"
-                      type="password"
-                      size="small"
-                      onChange={handlePasswordChange}
-                      value={newPassword}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      id="confirm-password"
-                      label="Confirm Password"
-                      type="password"
-                      size="small"
-                      onChange={handlePasswordChange}
-                      value={confirmPassword}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <Button onClick={handlePasswordUpdate}>
-                      Reset Password
-                    </Button>
-                  </Grid>
+          ) : (
+            ''
+          )}
+          <Grid item>
+            <form onSubmit={handleSubmit}>
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="flex-start"
+                rowSpacing={2}
+                columnSpacing={2}
+              >
+                <Grid item>
+                  <TextField
+                    required
+                    id="firstName"
+                    label="First Name"
+                    size="small"
+                    value={!isNew ? detailsToEdit.firstName : firstName}
+                    onChange={handleDetailsChange}
+                  />
                 </Grid>
-              </Box>
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="firstName"
-                label="First Name"
-                size="small"
-                value={detailsToEdit.firstName}
-                onChange={handleDetailsChange}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="lastName"
-                label="Last Name"
-                size="small"
-                value={detailsToEdit.lastName}
-                onChange={handleDetailsChange}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="email"
-                label="Email"
-                size="small"
-                value={detailsToEdit.email}
-                onChange={handleDetailsChange}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="phone"
-                label="Phone"
-                size="small"
-                value={detailsToEdit.phone}
-                onChange={handleDetailsChange}
-              />
-            </Grid>
+                <Grid item>
+                  <TextField
+                    required
+                    id="lastName"
+                    label="Last Name"
+                    size="small"
+                    value={!isNew ? detailsToEdit.lastName : lastName}
+                    onChange={handleDetailsChange}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    required
+                    id="email"
+                    label="Email"
+                    size="small"
+                    value={!isNew ? detailsToEdit.email : email}
+                    onChange={handleDetailsChange}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    required
+                    id="phone"
+                    label="Phone"
+                    size="small"
+                    value={!isNew ? detailsToEdit.phone : phone}
+                    onChange={handleDetailsChange}
+                  />
+                </Grid>
 
-            {detailsToEdit.accessLevel <= 1 ? (
-              <>
                 <Grid item>
                   <TextField
                     required
                     id="role"
                     label="Role"
                     size="small"
-                    value={detailsToEdit.role}
+                    value={!isNew ? detailsToEdit.role : role}
                     onChange={handleDetailsChange}
                   />
                 </Grid>
@@ -328,21 +336,20 @@ export default function EditUser(userDetails) {
                   <TextField
                     id="accessLevel"
                     label="Access Level"
-                    value={detailsToEdit.accessLevel}
+                    value={!isNew ? detailsToEdit.accessLevel : accessLevel}
                     size="small"
                     onChange={handleDetailsChange}
                   />
                 </Grid>
-              </>
-            ) : (
-              ''
-            )}
-            <Grid item>
-              <Button type="submit">SAVE</Button>
-              <Button onClick={handleCancel}>CANCEL</Button>
-            </Grid>
+
+                <Grid item>
+                  <Button type="submit">SAVE</Button>
+                  <Button onClick={handleCancel}>CANCEL</Button>
+                </Grid>
+              </Grid>
+            </form>
           </Grid>
-        </form>
+        </Grid>
       </>
     )
   }
