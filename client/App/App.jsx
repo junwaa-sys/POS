@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useCookies } from 'react-cookie'
+import { useCookies, Cookies } from 'react-cookie'
 import NavBar from './AppBar'
 import Pos from '../components/Pos'
 import * as apis from '../apis/logIn'
@@ -24,6 +24,12 @@ export default function App() {
   const [cookie, setCookie] = useCookies('loggedInUser')
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
+
+  const cookies = new Cookies()
+
+  React.useEffect(() => {
+    setLoggedInUser(cookies.get('loggedInUser'))
+  }, [])
 
   function handleChange(event) {
     const value_type = event.target.id

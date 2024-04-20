@@ -32,6 +32,13 @@ function ResponsiveAppBar({
   const cookies = new Cookies()
 
   const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS', 'USERS']
+  const pagesWithAccessLevel = [
+    { link: 'DASHBOARD', accessLevel: 3 },
+    { link: 'SALES', accessLevel: 3 },
+    { link: 'PRODUCTS', accessLevel: 3 },
+    { link: 'POS', accessLevel: 3 },
+    { link: 'USERS', accessLevel: 1 },
+  ]
   const settings = ['Account', 'Logout']
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
@@ -116,15 +123,21 @@ function ResponsiveAppBar({
                 </Menu>
               </Box>
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page) => (
-                  <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>
-                ))}
+                {pagesWithAccessLevel.map((page) => {
+                  if (loggedInUser) {
+                    if (page.accessLevel >= loggedInUser.accessLevel) {
+                      return (
+                        <Button
+                          key={page.link}
+                          onClick={handleCloseNavMenu}
+                          sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                          {page.link}
+                        </Button>
+                      )
+                    }
+                  }
+                })}
               </Box>
 
               <Box sx={{ flexGrow: 0 }}>
