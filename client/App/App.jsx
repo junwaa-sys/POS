@@ -20,6 +20,7 @@ export default function App() {
   const [loginErr, setLoginErr] = React.useState(false)
   const [userDetails, setUserDetails] = React.useState(null)
   const [isNew, setIsNew] = React.useState(false)
+  const [newId, setNewId] = React.useState('')
   const [cookie, setCookie] = useCookies('loggedInUser')
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
@@ -71,12 +72,22 @@ export default function App() {
             <Route path="/pos" element={<Pos />} />
             <Route
               path="/users-edit"
-              element={<EditUser userDetails={userDetails} isNew={isNew} />}
+              element={
+                <EditUser
+                  userDetails={userDetails}
+                  isNew={isNew}
+                  newId={newId}
+                />
+              }
             />
             <Route
               path="/users"
               element={
-                <Users setUserDetails={setUserDetails} setIsNew={setIsNew} />
+                <Users
+                  setUserDetails={setUserDetails}
+                  setIsNew={setIsNew}
+                  setNewId={setNewId}
+                />
               }
             />
           </Route>

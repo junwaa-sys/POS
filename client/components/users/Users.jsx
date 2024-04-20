@@ -27,7 +27,7 @@ import {
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-export default function Users({ setUserDetails, setIsNew }) {
+export default function Users({ setUserDetails, setIsNew, setNewId }) {
   const [userList, setUserList] = React.useState(null)
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
@@ -169,6 +169,8 @@ export default function Users({ setUserDetails, setIsNew }) {
 
   async function handleClick() {
     setIsNew(true)
+    const { id } = await apis.getLastUserId()
+    setNewId(id)
     navigate('/users-edit')
   }
 

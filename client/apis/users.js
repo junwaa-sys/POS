@@ -77,6 +77,22 @@ export async function updateUserDetails(updateDetails) {
   }
 }
 
+export async function addUser(updateDetails) {
+  try {
+    const response = await fetch('api/users/add-user', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ updateDetails }),
+    })
+    const json = await response.json()
+    return json
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export async function resetPassword(userId) {
   try {
     const response = await fetch('api/users/reset-password', {

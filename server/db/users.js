@@ -21,19 +21,23 @@ function getUserDetails(loginId, db = connection) {
     .first()
 }
 
-function getLastUserId(db = connection) {
-  return db('users').max('id as lastId')
+async function getLastUserId(db = connection) {
+  return db('users').insert({ first_name: '' }).returning('id')
 }
 
 async function updatePassword(userId, newHashedPassword, db = connection) {
   return db('users').update('password', newHashedPassword).where('id', userId)
 }
 
-function addUser(addingUser, userDetails, db = connection) {
+async function addUser(addingUser, userDetails, db = connection) {
+  const saltRound = 10
+  const hashedPwd = await bcrypt.hash('password', saltRound)
   return db('users').insert({
     email: userDetails.email,
+    password: hashedPwd,
     first_name: userDetails.firstName,
     last_name: userDetails.lastName,
+    phoen: userDetilas.phone,
     role: userDetails.role,
     access_level: userDetails.accessLevel,
     created_by_id: addingUser.id,
@@ -72,6 +76,23 @@ async function resetPassword(userId, db = connection) {
     .returning('id')
 }
 
+async function addNewUser(loginId, newDetails, modifyingUser, db = connection) {
+  const saltRound = 10
+  const hashedPwd = await bcrypt.hash('password', saltRound)
+  return db('users')
+    .update({
+      email: newDetails.email,
+      password: hashedPwd,
+      phone: newDetails.phone,
+      first_name: newDetails.firstName,
+      last_name: newDetails.lastName,
+      role: newDetails.role,
+      access_level: newDetails.accessLevel,
+      created_by_id: modifyingUser,
+    })
+    .where('id', loginId)
+}
+
 module.exports = {
   getUserDetails,
   updatePassword,
@@ -81,4 +102,5 @@ module.exports = {
   getLastUserId,
   getUserList,
   resetPassword,
+  addNewUser,
 }

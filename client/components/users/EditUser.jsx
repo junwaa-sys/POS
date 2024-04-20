@@ -21,7 +21,8 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 import ResetPasswordForm from './ResetPasswordForm'
 
-export default function EditUser({ userDetails, isNew }) {
+export default function EditUser({ userDetails, isNew, newId }) {
+  const [isLoading, setIsLoading] = React.useState(true)
   const [oldPassword, setOldPassword] = React.useState('')
   const [newPassword, setNewPassword] = React.useState('')
   const [alertOpen, setAlertOpen] = React.useState(false)
@@ -30,7 +31,7 @@ export default function EditUser({ userDetails, isNew }) {
   const [alertMessage, setAlertMessage] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
   const [detailsToEdit, setDetailsToEdit] = React.useState(null)
-  const [newId, setNewId] = React.useState(null)
+  const [detailsToAdd, setDetailsToAdd] = React.useState(null)
   const [notificationOpen, setNotificationOpen] = React.useState(false)
   const [notificationType, setNotificationType] = React.useState('')
   const [notificationText, setNotificationText] = React.useState('')
@@ -46,17 +47,20 @@ export default function EditUser({ userDetails, isNew }) {
 
   React.useEffect(() => {
     setLoggedInUser(cookies.get('loggedInUser'))
-    if (!isNew) {
+    if (!isNew && userDetails) {
       setDetailsToEdit(userDetails)
-    } else {
-      apis
-        .getLastUserId()
-        .then((res) => {
-          setNewId(res.lastId + 1)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      setIsLoading(false)
+    } else if (newId) {
+      setIsLoading(false)
+      setDetailsToEdit({
+        id: newId,
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        role: '',
+        accessLevel: '',
+      })
     }
   }, [])
 
@@ -103,7 +107,8 @@ export default function EditUser({ userDetails, isNew }) {
     apis
       .resetPassword(detailsToEdit.id)
       .then((res) => {
-        console.log(res)
+        setSuccessMessage('Password Successfully Reset.')
+        setSucccessOpen(true)
       })
       .catch((error) => {
         console.log(error)
@@ -113,6 +118,7 @@ export default function EditUser({ userDetails, isNew }) {
   function handleDetailsChange(event) {
     const dataName = event.target.id
     const value = event.target.value
+
     setDetailsToEdit({ ...detailsToEdit, [dataName]: value })
   }
 
@@ -128,18 +134,32 @@ export default function EditUser({ userDetails, isNew }) {
   function handleSubmit(event) {
     event.preventDefault()
     const modifyingUser = loggedInUser.id
-    apis
-      .updateUserDetails({ detailsToEdit, modifyingUser })
-      .then((res) => {
-        setNotificationType('updateSuccess')
-        setNotificationTitle('Save Details')
-        setNotificationText('Details successfully saved.')
-        setNotificationOpen(true)
-        console.log(res)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    if (isNew) {
+      setDetailsToEdit({ ...detailsToEdit, id: newId })
+      apis
+        .addUser({ detailsToEdit, modifyingUser })
+        .then((res) => {
+          setNotificationType('updateSuccess')
+          setNotificationTitle('Save Details')
+          setNotificationText('Details successfully saved.')
+          setNotificationOpen(true)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    } else {
+      apis
+        .updateUserDetails({ detailsToEdit, modifyingUser })
+        .then((res) => {
+          setNotificationType('updateSuccess')
+          setNotificationTitle('Save Details')
+          setNotificationText('Details successfully saved.')
+          setNotificationOpen(true)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
   }
 
   function handleCancel() {
@@ -153,7 +173,7 @@ export default function EditUser({ userDetails, isNew }) {
     setNotificationOpen(false)
   }
 
-  if (!isNew & (detailsToEdit === null)) {
+  if (isLoading) {
     return <p>Data is not available</p>
   } else {
     return (
@@ -287,7 +307,7 @@ export default function EditUser({ userDetails, isNew }) {
                     id="firstName"
                     label="First Name"
                     size="small"
-                    value={!isNew ? detailsToEdit.firstName : firstName}
+                    value={detailsToEdit?.firstName}
                     onChange={handleDetailsChange}
                   />
                 </Grid>
@@ -297,27 +317,25 @@ export default function EditUser({ userDetails, isNew }) {
                     id="lastName"
                     label="Last Name"
                     size="small"
-                    value={!isNew ? detailsToEdit.lastName : lastName}
+                    value={detailsToEdit?.lastName}
                     onChange={handleDetailsChange}
                   />
                 </Grid>
                 <Grid item>
                   <TextField
-                    required
                     id="email"
                     label="Email"
                     size="small"
-                    value={!isNew ? detailsToEdit.email : email}
+                    value={detailsToEdit?.email}
                     onChange={handleDetailsChange}
                   />
                 </Grid>
                 <Grid item>
                   <TextField
-                    required
                     id="phone"
                     label="Phone"
                     size="small"
-                    value={!isNew ? detailsToEdit.phone : phone}
+                    value={detailsToEdit?.phone}
                     onChange={handleDetailsChange}
                   />
                 </Grid>
@@ -328,15 +346,16 @@ export default function EditUser({ userDetails, isNew }) {
                     id="role"
                     label="Role"
                     size="small"
-                    value={!isNew ? detailsToEdit.role : role}
+                    value={detailsToEdit?.role}
                     onChange={handleDetailsChange}
                   />
                 </Grid>
                 <Grid item>
                   <TextField
+                    required
                     id="accessLevel"
                     label="Access Level"
-                    value={!isNew ? detailsToEdit.accessLevel : accessLevel}
+                    value={detailsToEdit?.accessLevel}
                     size="small"
                     onChange={handleDetailsChange}
                   />

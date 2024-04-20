@@ -86,10 +86,21 @@ router.put('/update-details', async (req, res) => {
   }
 })
 
+router.put('/add-user', async (req, res) => {
+  const { modifyingUser, detailsToEdit } = req.body.updateDetails
+  const userId = detailsToEdit.id
+  try {
+    const response = await db.addNewUser(userId, detailsToEdit, modifyingUser)
+    res.json(response)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 router.get('/get-last-id', async (req, res) => {
   try {
     const response = await db.getLastUserId()
-    res.json(response)
+    res.json(response[0])
   } catch (error) {
     console.log(error)
   }
