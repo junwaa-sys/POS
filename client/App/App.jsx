@@ -8,6 +8,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import EditUser from '../components/users/EditUser'
 import Users from '../components/users/Users'
+import Products from '../components/products/Products'
+import EditProduct from '../components/products/EditProduct'
 
 const darkTheme = createTheme({
   palette: {
@@ -20,8 +22,12 @@ export default function App() {
   const [loginErr, setLoginErr] = React.useState(false)
   const [userDetails, setUserDetails] = React.useState(null)
   const [isNew, setIsNew] = React.useState(false)
-  const [newId, setNewId] = React.useState('')
+  const [newId, setNewId] = React.useState(false)
+  const [productDetails, setProductDetails] = React.useState(null)
+  const [productIdForEdit, setProductIdForEdit] = React.useState(null)
+  const [newProductId, setNewProductId] = React.useState(null)
   const [cookie, setCookie] = useCookies('loggedInUser')
+  const [isNewProduct, setIsNewProduct] = React.useState(false)
   const userIdRef = React.useRef('')
   const passwordRef = React.useRef('')
 
@@ -83,6 +89,29 @@ export default function App() {
                   userDetails={userDetails}
                   isNew={isNew}
                   newId={newId}
+                />
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <Products
+                  setProductIdForEdit={setProductIdForEdit}
+                  setNewProductId={setNewProductId}
+                  setProductDetails={setProductDetails}
+                  setIsNewProduct={setIsNewProduct}
+                />
+              }
+            />
+            <Route
+              path="/products-edit"
+              element={
+                <EditProduct
+                  newProductId={newProductId}
+                  productIdForEdit={productIdForEdit}
+                  productDetails={productDetails}
+                  setProductDetails={setProductDetails}
+                  isNewProduct={isNewProduct}
                 />
               }
             />

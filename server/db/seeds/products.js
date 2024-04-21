@@ -13,7 +13,8 @@ exports.seed = async function (knex) {
       category_id: 1,
       category_name: 'category 1',
       unit_cost: 1.0,
-      sale_price: 2.0,
+      sale_unit: 1,
+
       start_qty: 10,
       sold_qty: 2,
       bought_qty: 5,
@@ -27,7 +28,8 @@ exports.seed = async function (knex) {
       category_id: 1,
       category_name: 'category 1',
       unit_cost: 2.0,
-      sale_price: 4.0,
+      sale_unit: 2,
+
       start_qty: 11,
       sold_qty: 3,
       bought_qty: 3,
@@ -41,7 +43,8 @@ exports.seed = async function (knex) {
       category_id: 2,
       category_name: 'category 2',
       unit_cost: 6.0,
-      sale_price: 10.0,
+      sale_unit: 3,
+
       start_qty: 15,
       sold_qty: 6,
       bought_qty: 2,

@@ -10,7 +10,6 @@ exports.up = function (knex) {
     table.integer('category_id')
     table.string('category_name')
     table.double('unit_cost')
-    table.double('sale_price')
     table.integer('sale_unit')
     table.integer('start_qty')
     table.integer('sold_qty')

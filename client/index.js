@@ -7,11 +7,9 @@ import store from './App/store'
 
 const root = createRoot(document.getElementById('app'))
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <CookiesProvider defaultSetOptions={{ path: '/' }}>
-        <App />
-      </CookiesProvider>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <CookiesProvider defaultSetOptions={{ path: '/' }}>
+      <App />
+    </CookiesProvider>
+  </Provider>
 )

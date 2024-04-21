@@ -174,7 +174,7 @@ export default function EditUser({ userDetails, isNew, newId }) {
   }
 
   if (isLoading) {
-    return <p>Data is not available</p>
+    return <p>Data is not available.</p>
   } else {
     return (
       <>
