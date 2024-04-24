@@ -33,10 +33,10 @@ function addProduct(productDetails, db = connection) {
     category_id: productDetails.categoryId,
     category_name: productDetails.categoryName,
     unit_cost: productDetails.unitCost,
-    sale_price: productDetails.salePrice,
     sale_unit: productDetails.saleUnit,
     start_qty: productDetails.startQty,
     status: productDetails.status,
+    adj_qty: productDetails.adjQty,
   })
 }
 
@@ -64,6 +64,7 @@ function updatePrice(newPrices, db = connection) {
 
 function addPrice(newPrice, db = connection) {
   return db('selling_prices').insert({
+    product_id: newPrice.productId,
     price: newPrice.price,
     level: newPrice.level,
   })

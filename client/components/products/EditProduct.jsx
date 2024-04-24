@@ -30,6 +30,7 @@ export default function EditProduct({
   const [notificationText, setNotificationText] = React.useState('')
   const [notificationType, setNotificationType] = React.useState('')
   const [loggedInUser, setLoggedInUser] = React.useState('')
+  const [detailsToEdit, setDetailsToEdit] = React.useState('')
 
   const [isLoading, setIsLoading] = React.useState(true)
 
@@ -38,20 +39,28 @@ export default function EditProduct({
 
   React.useEffect(() => {
     setLoggedInUser(cookies.get('loggedInUser'))
-    if (isNewProduct) {
-      setProductDetails({
+    if (!isNewProduct && productDetails) {
+      setDetailsToEdit(productDetails)
+      setIsLoading(false)
+    } else {
+      setDetailsToEdit({
         id: newProductId,
         productName: '',
         description: '',
-        sellingPrices: [],
-        categoryId: null,
+        sellingPrices: [
+          { level: 1, price: 0 },
+          { level: 2, price: 0 },
+          { level: 3, price: 0 },
+        ],
+        categoryId: 1,
         categoryName: '',
-        unitCost: null,
+        unitCost: 0,
         saleUnit: 1,
-        StartQty: 0,
+        startQty: 0,
         adjQty: 0,
         status: 'active',
       })
+      setIsLoading(false)
     }
   }, [])
 
@@ -60,22 +69,22 @@ export default function EditProduct({
     const columnName = event.target.id
     if (event.target.type === 'number') {
       const parsedValue = parseFloat(value)
-      setProductDetails({ ...productDetails, [columnName]: parsedValue })
+      setDetailsToEdit({ ...detailsToEdit, [columnName]: parsedValue })
     } else {
-      setProductDetails({ ...productDetails, [columnName]: value })
+      setDetailsToEdit({ ...detailsToEdit, [columnName]: value })
     }
   }
 
-  function handlePricesChange(event, priceId) {
+  function handlePricesChange(event, PriceIndex) {
     const value = parseFloat(event.target.value)
-    const updatedPrices = productDetails.sellingPrices.map((price) => {
-      if (price.id === priceId) {
+    const updatedPrices = detailsToEdit.sellingPrices.map((price, index) => {
+      if (index === PriceIndex) {
         return { ...price, price: value }
       }
       return price
     })
 
-    setProductDetails({ ...productDetails, sellingPrices: updatedPrices })
+    setDetailsToEdit({ ...detailsToEdit, sellingPrices: updatedPrices })
   }
 
   function handleNoficationClose(event, notificationType) {
@@ -98,9 +107,20 @@ export default function EditProduct({
     event.preventDefault()
     const modifyingUser = loggedInUser.id
     if (isNewProduct) {
+      apis
+        .addProduct(detailsToEdit)
+        .then((res) => {
+          setNotificationType('updateSuccess')
+          setNotificationTitle('Save Details')
+          setNotificationText('Details successfully saved.')
+          setNotificationOpen(true)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     } else {
       apis
-        .updateProduct(productDetails)
+        .updateProduct(detailsToEdit)
         .then((res) => {
           setNotificationType('updateSuccess')
           setNotificationTitle('Save Details')
@@ -113,7 +133,7 @@ export default function EditProduct({
     }
   }
 
-  if (productDetails === null) {
+  if (isLoading) {
     return (
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -173,15 +193,17 @@ export default function EditProduct({
               <TextField
                 id="product-id"
                 label="ID"
+                size="small"
                 inputProps={{ disabled: true, readOnly: true }}
-                defaultValue={productDetails.id}
+                defaultValue={detailsToEdit.id}
               />
             </Grid>
             <Grid item>
               <TextField
                 id="productName"
                 label="NAME"
-                value={productDetails.productName}
+                size="small"
+                value={detailsToEdit.productName}
                 onChange={handleChange}
               />
             </Grid>
@@ -189,39 +211,41 @@ export default function EditProduct({
               <TextField
                 id="description"
                 label="DESCRIPTION"
-                value={productDetails.description}
+                size="small"
+                value={detailsToEdit.description}
                 onChange={handleChange}
               />
             </Grid>
 
             <Grid item>
               <Grid container direction="column" rowSpacing={2} maxWidth={200}>
-                {productDetails.sellingPrices.map((price, index) => {
+                {detailsToEdit.sellingPrices.map((price, index) => {
                   const label = `Level ${price.level}`
                   return (
                     <Grid item key={index}>
                       <TextField
                         required
-                        id={`${productDetails.id}-${price.id}`}
+                        size="small"
+                        id={`${detailsToEdit.id}-${price.id}`}
                         label={label}
                         type="number"
                         value={price.price}
                         onChange={(e) => {
-                          handlePricesChange(e, price.id)
+                          handlePricesChange(e, index)
                         }}
                       />
                     </Grid>
                   )
                 })}
-                <Button>SAVE PRICES</Button>
               </Grid>
             </Grid>
             <Grid item>
               <TextField
                 id="unitCost"
                 label="UNIT COST"
+                size="small"
                 type="number"
-                value={productDetails.unitCost}
+                value={detailsToEdit.unitCost}
                 onChange={handleChange}
               />
             </Grid>
@@ -229,8 +253,9 @@ export default function EditProduct({
               <TextField
                 id="saleUnit"
                 label="SALES UNIT"
+                size="small"
                 type="number"
-                value={productDetails.saleUnit}
+                value={detailsToEdit.saleUnit}
                 onChange={handleChange}
               />
             </Grid>
@@ -238,8 +263,9 @@ export default function EditProduct({
               <TextField
                 id="startQty"
                 label="INITIAL QTY"
+                size="small"
                 type="number"
-                value={productDetails.startQty}
+                value={detailsToEdit.startQty}
                 onChange={handleChange}
               />
             </Grid>
@@ -247,16 +273,18 @@ export default function EditProduct({
               <TextField
                 id="adjQty"
                 label="ADJ QTY"
+                size="small"
                 type="number"
-                value={productDetails.adjQty}
+                value={detailsToEdit.adjQty}
                 onChange={handleChange}
               />
             </Grid>
             <Grid item>
               <Select
                 labelId="status"
+                size="small"
                 id="status"
-                value={productDetails.status}
+                value={detailsToEdit.status}
                 onChange={handleChange}
                 autoWidth
               >

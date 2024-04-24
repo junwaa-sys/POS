@@ -29,7 +29,6 @@ import { useNavigate } from 'react-router-dom'
 
 export default function Products({
   setProductIdForEdit,
-  setNewProductId,
   setProductDetails,
   setIsNewProduct,
 }) {
@@ -164,6 +163,7 @@ export default function Products({
     const productDetails = productList.filter(
       (product) => product.id === productId
     )
+    setIsNewProduct(false)
     setProductDetails(productDetails[0])
     setProductIdForEdit(productId)
     navigate('/products-edit')

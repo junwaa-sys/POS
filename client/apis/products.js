@@ -29,3 +29,19 @@ export async function updateProduct(productDetails) {
     console.log(error)
   }
 }
+
+export async function addProduct(productDetails) {
+  try {
+    const response = await fetch('api/products/add', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productDetails),
+    })
+    const json = await response.json()
+    return json
+  } catch (error) {
+    console.log(error)
+  }
+}
