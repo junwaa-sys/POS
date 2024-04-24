@@ -1,8 +1,8 @@
-import { Button } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import React from 'react'
 
 function Pos() {
-  return <Button>TEST</Button>
+  return <Grid container></Grid>
 }
 
 export default Pos
