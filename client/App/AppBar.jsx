@@ -31,13 +31,14 @@ function ResponsiveAppBar({
   const navigate = useNavigate()
   const cookies = new Cookies()
 
-  const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS', 'USERS']
+  const pages = ['DASHBOARD', 'SALES', 'PRODUCTS', 'POS', 'USERS', 'SETTINGS']
   const pagesWithAccessLevel = [
     { link: 'DASHBOARD', accessLevel: 3 },
     { link: 'SALES', accessLevel: 3 },
     { link: 'PRODUCTS', accessLevel: 3 },
     { link: 'POS', accessLevel: 3 },
     { link: 'USERS', accessLevel: 1 },
+    { link: 'SETTINGS', accessLevel: 1 },
   ]
   const settings = ['Account', 'Logout']
 

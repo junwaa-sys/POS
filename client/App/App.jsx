@@ -10,6 +10,7 @@ import EditUser from '../components/users/EditUser'
 import Users from '../components/users/Users'
 import Products from '../components/products/Products'
 import EditProduct from '../components/products/EditProduct'
+import Settings from '../components/pos-settings/Settings'
 
 const darkTheme = createTheme({
   palette: {
@@ -125,6 +126,7 @@ export default function App() {
                 />
               }
             />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>
