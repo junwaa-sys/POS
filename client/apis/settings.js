@@ -25,3 +25,19 @@ export async function uploadLogo(fileData) {
     console.log(error)
   }
 }
+
+export async function updateSettings(settings) {
+  try {
+    const result = await fetch('api/settings/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    })
+    const json = result.json()
+    return json
+  } catch (error) {
+    console.error(error)
+  }
+}

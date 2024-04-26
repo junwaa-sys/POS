@@ -18,7 +18,7 @@ function getSettings(db = connection) {
 function updateSettings(settings, db = connection) {
   return db('pos_settings')
     .update({
-      company_name: companyName,
+      company_name: settings.companyName,
       trade_name: settings.tradeName,
       email: settings.email,
       phone: settings.phone,

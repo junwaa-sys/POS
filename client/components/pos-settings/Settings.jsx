@@ -11,11 +11,16 @@ import {
   styled,
 } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import Notification from './Notification'
 
 export default function Settings() {
   const [settings, setSettings] = React.useState({})
   const [isLoading, setIsLoading] = React.useState(true)
   const [updatedSetting, setUpdatedSetting] = React.useState(null)
+  const [notificationOpen, setNotificationOpen] = React.useState(false)
+  const [notificationTitle, setNotificationTitle] = React.useState('')
+  const [notificationText, setNotificationText] = React.useState('')
+  const [notificationType, setNotificationType] = React.useState('')
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -52,6 +57,35 @@ export default function Settings() {
     setUpdatedSetting(logoUpdated)
   }
 
+  function handleUpdate() {
+    setIsLoading(true)
+    apis
+      .updateSettings(settings)
+      .then((res) => {
+        setIsLoading(false)
+        setNotificationType('updateSuccess')
+        setNotificationText('Saved Successfully')
+        setNotificationTitle('Save Details')
+        setNotificationOpen(true)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  function handleNotificationClose(event, notificationType) {
+    if (notificationType === 'updateCancel') {
+      setNotificationOpen(false)
+      navigate(-1)
+    } else if (notificationType === 'updateSuccess') {
+      setNotificationOpen(false)
+    }
+  }
+
+  function handleNotificationCancel() {
+    setNotificationOpen(false)
+  }
+
   if (isLoading) {
     return (
       <Backdrop
@@ -63,80 +97,92 @@ export default function Settings() {
     )
   } else {
     return (
-      <Grid container direction="column" rowSpacing={2}>
-        <Grid item>
-          <Box>
-            <img
-              width="150"
-              height="150"
-              src={settings.logoUrl ? settings.logoUrl : '/images/no_image.png'}
+      <>
+        <Notification
+          notificationTitle={notificationTitle}
+          notificationText={notificationText}
+          notificationType={notificationType}
+          notificationOpen={notificationOpen}
+          handleNotificationClose={handleNotificationClose}
+          handleNotificationCancel={handleNotificationCancel}
+        />
+        <Grid container direction="column" rowSpacing={2}>
+          <Grid item>
+            <Box>
+              <img
+                width="150"
+                height="150"
+                src={
+                  settings.logoUrl ? settings.logoUrl : '/images/no_image.png'
+                }
+              />
+            </Box>
+            <Button
+              component="label"
+              size="small"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              onChange={handleFileSelect}
+            >
+              Upload Logo
+              <VisuallyHiddenInput type="file" />
+            </Button>
+          </Grid>
+          <Grid item>
+            <TextField
+              id="companyName"
+              label="Company Name"
+              size="small"
+              value={settings.companyName}
+              onChange={handleChange}
             />
-          </Box>
-          <Button
-            component="label"
-            size="small"
-            role={undefined}
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-            onChange={handleFileSelect}
-          >
-            Upload Logo
-            <VisuallyHiddenInput type="file" />
-          </Button>
-        </Grid>
-        <Grid item>
-          <TextField
-            id="companyName"
-            label="Company Name"
-            size="small"
-            value={settings.companyName}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="tradeName"
-            label="Trade Name"
-            size="small"
-            value={settings.tradeName}
-            onChange={handleChange}
-          />
-        </Grid>
+          </Grid>
+          <Grid item>
+            <TextField
+              id="tradeName"
+              label="Trade Name"
+              size="small"
+              value={settings.tradeName}
+              onChange={handleChange}
+            />
+          </Grid>
 
-        <Grid item>
-          <TextField
-            id="email"
-            label="Email"
-            size="small"
-            value={settings.email}
-            onChange={handleChange}
-          />
+          <Grid item>
+            <TextField
+              id="email"
+              label="Email"
+              size="small"
+              value={settings.email}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              id="policy"
+              label="Policy"
+              size="small"
+              value={settings.policy}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              id="numberOfPos"
+              label="Number of POS"
+              size="small"
+              type="number"
+              value={settings.numberOfPos}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item>
+            <Button onClick={handleUpdate}>SAVE</Button>
+            <Button>CANCEL</Button>
+          </Grid>
         </Grid>
-        <Grid item>
-          <TextField
-            id="poilicy"
-            label="Policy"
-            size="small"
-            value={settings.policy}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="numberOfPos"
-            label="Number of POS"
-            size="small"
-            type="number"
-            value={settings.numberOfPos}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item>
-          <Button>SAVE</Button>
-          <Button>CANCEL</Button>
-        </Grid>
-      </Grid>
+      </>
     )
   }
 }

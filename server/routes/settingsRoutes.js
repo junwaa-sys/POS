@@ -40,4 +40,14 @@ router.post('/upload-logo', upload.single('image'), async (req, res) => {
   }
 })
 
+router.put('/update', async (req, res) => {
+  try {
+    const settings = req.body
+    const result = await db.updateSettings(settings)
+    res.json(result)
+  } catch (error) {
+    console.error(error)
+  }
+})
+
 module.exports = router
