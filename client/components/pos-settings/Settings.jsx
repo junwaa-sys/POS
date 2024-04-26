@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import * as apis from '../../apis/settings'
 import {
   Backdrop,
@@ -21,6 +22,8 @@ export default function Settings() {
   const [notificationTitle, setNotificationTitle] = React.useState('')
   const [notificationText, setNotificationText] = React.useState('')
   const [notificationType, setNotificationType] = React.useState('')
+
+  const navigate = useNavigate()
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -84,6 +87,13 @@ export default function Settings() {
 
   function handleNotificationCancel() {
     setNotificationOpen(false)
+  }
+
+  function handleCancel() {
+    setNotificationType('updateCancel')
+    setNotificationTitle('Warning!')
+    setNotificationText('Any Unsaved Details will be lost.')
+    setNotificationOpen(true)
   }
 
   if (isLoading) {
@@ -179,7 +189,7 @@ export default function Settings() {
           </Grid>
           <Grid item>
             <Button onClick={handleUpdate}>SAVE</Button>
-            <Button>CANCEL</Button>
+            <Button onClick={handleCancel}>CANCEL</Button>
           </Grid>
         </Grid>
       </>

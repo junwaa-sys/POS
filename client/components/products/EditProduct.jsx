@@ -96,6 +96,10 @@ export default function EditProduct({
     }
   }
 
+  function handleNotificationCancel() {
+    setNotificationOpen(false)
+  }
+
   function handleCancel() {
     setNotificationType('updateCancel')
     setNotificationTitle('Warning!')
@@ -171,7 +175,7 @@ export default function EditProduct({
               </Button>
               {notificationType != 'updateSuccess' ? (
                 <Button
-                  onClick={(e) => handleNoficationCancel(e, notificationType)}
+                  onClick={(e) => handleNotificationCancel(e, notificationType)}
                 >
                   Cancel
                 </Button>
