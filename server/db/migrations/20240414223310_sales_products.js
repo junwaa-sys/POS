@@ -11,6 +11,7 @@ exports.up = function (knex) {
     table.double('unit_price')
     table.double('total_price')
     table.double('discount')
+    table.double('discount_percent')
     table.double('total_payable')
   })
 }

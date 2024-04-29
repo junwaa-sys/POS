@@ -85,7 +85,7 @@ function ResponsiveAppBar({
     return (
       <>
         <AppBar position="static">
-          <Container maxWidth="xl">
+          <Container maxWidth="100vw">
             <Toolbar disableGutters>
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
@@ -173,7 +173,7 @@ function ResponsiveAppBar({
             </Toolbar>
           </Container>
         </AppBar>
-        <Container sx={{ paddingTop: '30px' }}>
+        <Container maxWidth="80vw" sx={{ paddingTop: '30px' }}>
           <Outlet />
         </Container>
       </>
