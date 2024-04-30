@@ -35,10 +35,10 @@ export default function PurchaseListTable({
                   <TableCell>{purchase.qty}</TableCell>
                   <TableCell>{purchase.unitPrice}</TableCell>
                   <TableCell>
-                    <TextField value={purchase.disc} />
+                    <TextField size="small" value={purchase.disc} />
                   </TableCell>
                   <TableCell>
-                    <TextField value={purchase.discPercent} />
+                    <TextField size="small" value={purchase.discPercent} />
                   </TableCell>
                   <TableCell>{purchase.totalPrice}</TableCell>
                 </TableRow>

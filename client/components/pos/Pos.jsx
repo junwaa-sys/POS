@@ -1,5 +1,6 @@
 import React from 'react'
 import * as productApis from '../../apis/products'
+import * as settingApis from '../../apis/settings'
 import PurchaseList from '../pos/PurchaseListTable'
 import {
   Backdrop,
@@ -11,23 +12,32 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Select,
+  MenuItem,
 } from '@mui/material'
 
 function Pos() {
   const [isLoading, setIsLoading] = React.useState(true)
   const [productBarcode, setProductBarcode] = React.useState('')
   const [productList, setProductList] = React.useState([])
+  const [settings, setSettings] = React.useState([])
   const [purchasedList, setPurchasedList] = React.useState([])
   const [labelName, setLabelName] = React.useState('Barcode')
 
   React.useEffect(() => {
     getProducts()
+    getSettings()
   }, [])
 
   async function getProducts() {
     const products = await productApis.getProducts()
     setProductList(products)
     setIsLoading(false)
+  }
+
+  async function getSettings() {
+    const settings = await settingApis.getSettings()
+    setSettings(settings)
   }
 
   async function handleProductSelect(event) {
@@ -101,7 +111,7 @@ function Pos() {
             <TextField
               label={labelName}
               size="small"
-              focused
+              autoFocus
               sx={{ marginBottom: '20px' }}
               value={productBarcode}
               onChange={handleBarcodeChange}
@@ -123,7 +133,6 @@ function Pos() {
             </RadioGroup>
           </Grid>
         </Grid>
-
         <Grid container>
           <PurchaseList
             purchasedList={purchasedList}
