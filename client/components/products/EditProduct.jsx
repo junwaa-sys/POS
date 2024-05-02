@@ -1,5 +1,6 @@
 import React from 'react'
 import * as apis from '../../apis/products'
+import * as settingApis from '../../apis/settings'
 import {
   Grid,
   TextField,
@@ -31,37 +32,55 @@ export default function EditProduct({
   const [notificationType, setNotificationType] = React.useState('')
   const [loggedInUser, setLoggedInUser] = React.useState('')
   const [detailsToEdit, setDetailsToEdit] = React.useState('')
+  const [settings, setSettings] = React.useState({})
 
   const [isLoading, setIsLoading] = React.useState(true)
 
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  async function getSettings() {
+    const result = await settingApis.getSettings()
+    return result
+  }
+
+  function initializeDetails(settingData) {
+    const initialDataSet = {
+      id: newProductId,
+      productName: '',
+      description: '',
+      sellingPrices: [],
+      categoryId: 1,
+      categoryName: '',
+      unitCost: 0,
+      saleUnit: 1,
+      startQty: 0,
+      adjQty: 0,
+      status: 'active',
+    }
+    const noOfLevels = settingData.priceLevels
+
+    for (let i = 0; i < noOfLevels; i++) {
+      initialDataSet.sellingPrices.push({ level: i + 1, price: 0 })
+    }
+    setDetailsToEdit(initialDataSet)
+    setIsLoading(false)
+  }
+
   React.useEffect(() => {
     setLoggedInUser(cookies.get('loggedInUser'))
-    if (!isNewProduct && productDetails) {
-      setDetailsToEdit(productDetails)
-      setIsLoading(false)
-    } else {
-      setDetailsToEdit({
-        id: newProductId,
-        productName: '',
-        description: '',
-        sellingPrices: [
-          { level: 1, price: 0 },
-          { level: 2, price: 0 },
-          { level: 3, price: 0 },
-        ],
-        categoryId: 1,
-        categoryName: '',
-        unitCost: 0,
-        saleUnit: 1,
-        startQty: 0,
-        adjQty: 0,
-        status: 'active',
+    getSettings()
+      .then((res) => {
+        if (!isNewProduct && productDetails) {
+          setDetailsToEdit(productDetails)
+          setIsLoading(false)
+        } else {
+          initializeDetails(res)
+        }
       })
-      setIsLoading(false)
-    }
+      .catch((error) => {
+        console.error(`Error while loading settings: ${error}`)
+      })
   }, [])
 
   function handleChange(event) {

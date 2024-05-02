@@ -14,6 +14,7 @@ exports.seed = async function (knex) {
       phone: '',
       policy: '',
       number_of_pos: 1,
+      price_levels: 1,
     },
   ])
 }

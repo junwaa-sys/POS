@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import Notification from './Notification'
+import AlertDisplay from './Alerts'
 
 export default function Settings() {
   const [settings, setSettings] = React.useState({})
@@ -22,6 +23,9 @@ export default function Settings() {
   const [notificationTitle, setNotificationTitle] = React.useState('')
   const [notificationText, setNotificationText] = React.useState('')
   const [notificationType, setNotificationType] = React.useState('')
+  const [alertOpen, setAlertOpen] = React.useState(false)
+  const [alertType, setAlertType] = React.useState('')
+  const [alertText, setAlertText] = React.useState('')
 
   const navigate = useNavigate()
 
@@ -49,7 +53,18 @@ export default function Settings() {
   function handleChange(event) {
     const columnName = event.target.id
     const value = event.target.value
-    setSettings({ ...settings, [columnName]: value })
+    const valueType = event.target.type
+    if (valueType === 'number') {
+      if (value < 0 || value % 1 > 0) {
+        setAlertType('error')
+        setAlertText('Entered Number is invalid')
+        setAlertOpen(true)
+      } else {
+        setSettings({ ...settings, [columnName]: value })
+      }
+    } else {
+      setSettings({ ...settings, [columnName]: value })
+    }
   }
 
   async function handleFileSelect(event) {
@@ -116,6 +131,12 @@ export default function Settings() {
           handleNotificationClose={handleNotificationClose}
           handleNotificationCancel={handleNotificationCancel}
         />
+        <AlertDisplay
+          alertOpen={alertOpen}
+          setAlertOpen={setAlertOpen}
+          alertText={alertText}
+          alertType={alertType}
+        />
         <Grid container direction="column" rowSpacing={2}>
           <Grid item>
             <Box>
@@ -179,10 +200,21 @@ export default function Settings() {
           </Grid>
           <Grid item>
             <TextField
+              id="priceLevels"
+              label="Price Levels"
+              size="small"
+              type="number"
+              value={settings.priceLevels}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
               id="numberOfPos"
               label="Number of POS"
               size="small"
               type="number"
+              inputProps={{ step: 1, pattern: '[0-9]{10}' }}
               value={settings.numberOfPos}
               onChange={handleChange}
             />

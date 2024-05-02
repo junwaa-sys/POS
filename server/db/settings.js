@@ -10,7 +10,8 @@ function getSettings(db = connection) {
       'email',
       'phone',
       'policy',
-      'number_of_pos as numberOfPos'
+      'number_of_pos as numberOfPos',
+      'price_levels as priceLevels'
     )
     .first()
 }

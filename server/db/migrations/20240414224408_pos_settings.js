@@ -11,6 +11,7 @@ exports.up = function (knex) {
     table.string('email')
     table.string('phone')
     table.string('policy')
+    table.integer('price_levels')
     table.integer('number_of_pos')
   })
 }
