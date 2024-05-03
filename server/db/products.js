@@ -46,25 +46,28 @@ function addProduct(productDetails, db = connection) {
 }
 
 function updateProduct(newProductDetails, db = connection) {
+  const unitCost = parseFloat(productDetails.unitCost)
+  const saleUnit = parseFloat(productDetails.saleUnit)
+  const startQty = parseFloat(productDetails.startQty)
+  const adjQty = parseFloat(productDetails.adjQty)
+
   return db('products').update({
     product_name: newProductDetails.productName,
     description: newProductDetails.description,
     category_id: newProductDetails.categoryId,
     category_name: newProductDetails.categoryName,
     bought_qty: newProductDetails.boughtQty,
-    unit_cost: newProductDetails.unitCost,
-    sale_price: newProductDetails.salePrice,
-    sale_unit: newProductDetails.saleUnit,
-    start_qty: newProductDetails.startQty,
-    adj_qty: newProductDetails.adjQty,
+    unit_cost: unitCost,
+    sale_unit: saleUnit,
+    start_qty: startQty,
+    adj_qty: adjQty,
     status: newProductDetails.status,
   })
 }
 
 function updatePrice(newPrices, db = connection) {
-  return db('selling_prices')
-    .update({ price: newPrices.price })
-    .where('id', newPrices.id)
+  const price = parseFloat(newPrice.price)
+  return db('selling_prices').update({ price: price }).where('id', newPrices.id)
 }
 
 function addPrice(newPrice, db = connection) {
@@ -72,8 +75,8 @@ function addPrice(newPrice, db = connection) {
   const level = parseInt(newPrice.level)
   return db('selling_prices').insert({
     product_id: newPrice.productId,
-    price: newPrice.price,
-    level: newPrice.level,
+    price: price,
+    level: level,
   })
 }
 

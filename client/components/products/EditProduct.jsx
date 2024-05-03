@@ -277,7 +277,7 @@ export default function EditProduct({
             <Grid item>
               <Grid container direction="column" rowSpacing={2} maxWidth={200}>
                 {detailsToEdit.sellingPrices.map((price, index) => {
-                  const label = `Level ${price.level}`
+                  const label = `Sales Price Level ${price.level}`
                   if (price.level <= settings?.priceLevels) {
                     return (
                       <Grid item key={index}>
