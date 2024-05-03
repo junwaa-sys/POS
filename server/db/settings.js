@@ -25,6 +25,7 @@ function updateSettings(settings, db = connection) {
       phone: settings.phone,
       policy: settings.policy,
       number_of_pos: settings.numberOfPos,
+      price_levels: settings.priceLevels,
     })
     .where('id', 1)
 }

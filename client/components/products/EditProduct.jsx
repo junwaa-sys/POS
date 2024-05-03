@@ -41,10 +41,11 @@ export default function EditProduct({
 
   async function getSettings() {
     const result = await settingApis.getSettings()
+    setSettings(result)
     return result
   }
 
-  function initializeDetails(settingData) {
+  async function initializeDetails(settingData) {
     const initialDataSet = {
       id: newProductId,
       productName: '',
@@ -64,7 +65,20 @@ export default function EditProduct({
       initialDataSet.sellingPrices.push({ level: i + 1, price: 0 })
     }
     setDetailsToEdit(initialDataSet)
-    setIsLoading(false)
+  }
+
+  async function setProductDetailsToEdit(details, settings) {
+    const prices = details.sellingPrices
+    const setPriceLevels = settings.priceLevels
+    if (prices.length >= setPriceLevels) {
+      setDetailsToEdit(details)
+    } else {
+      const lastLevel = prices.length
+      for (let i = 0; i < setPriceLevels - prices.length; i++) {
+        details.sellingPrices.push({ level: lastLevel + i + 1, price: 0 })
+      }
+      setDetailsToEdit(details)
+    }
   }
 
   React.useEffect(() => {
@@ -72,10 +86,21 @@ export default function EditProduct({
     getSettings()
       .then((res) => {
         if (!isNewProduct && productDetails) {
-          setDetailsToEdit(productDetails)
-          setIsLoading(false)
+          setProductDetailsToEdit(productDetails, res)
+            .then((res) => {
+              setIsLoading(false)
+            })
+            .catch((error) => {
+              console.error(error)
+            })
         } else {
           initializeDetails(res)
+            .then((res) => {
+              setIsLoading(false)
+            })
+            .catch((error) => {
+              console.error(error)
+            })
         }
       })
       .catch((error) => {
@@ -239,26 +264,27 @@ export default function EditProduct({
                 onChange={handleChange}
               />
             </Grid>
-
             <Grid item>
               <Grid container direction="column" rowSpacing={2} maxWidth={200}>
                 {detailsToEdit.sellingPrices.map((price, index) => {
                   const label = `Level ${price.level}`
-                  return (
-                    <Grid item key={index}>
-                      <TextField
-                        required
-                        size="small"
-                        id={`${detailsToEdit.id}-${price.id}`}
-                        label={label}
-                        type="number"
-                        value={price.price}
-                        onChange={(e) => {
-                          handlePricesChange(e, index)
-                        }}
-                      />
-                    </Grid>
-                  )
+                  if (price.level <= settings?.priceLevels) {
+                    return (
+                      <Grid item key={index}>
+                        <TextField
+                          required
+                          size="small"
+                          id={`${detailsToEdit.id}-${price.id}`}
+                          label={label}
+                          type="number"
+                          value={price.price}
+                          onChange={(e) => {
+                            handlePricesChange(e, index)
+                          }}
+                        />
+                      </Grid>
+                    )
+                  }
                 })}
               </Grid>
             </Grid>

@@ -28,8 +28,15 @@ router.put('/update', async (req, res) => {
   try {
     const productDetails = req.body
     const response = await db.updateProduct(productDetails)
+    const productId = productDetails.id
+    console.log(productDetails)
     productDetails.sellingPrices.forEach(async (price) => {
-      await db.updatePrice(price)
+      if (price.id) {
+        await db.updatePrice(price)
+      } else {
+        price.productId = productId
+        await db.addPrice(price)
+      }
     })
     res.json(response)
   } catch (error) {
