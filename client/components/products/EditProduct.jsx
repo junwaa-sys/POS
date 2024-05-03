@@ -18,6 +18,7 @@ import {
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Cookies } from 'react-cookie'
+import AlertDisplay from './Alerts'
 
 export default function EditProduct({
   newProductId,
@@ -30,6 +31,9 @@ export default function EditProduct({
   const [notificationTitle, setNotificationTitle] = React.useState('')
   const [notificationText, setNotificationText] = React.useState('')
   const [notificationType, setNotificationType] = React.useState('')
+  const [alertOpen, setAlertOpen] = React.useState(false)
+  const [alertType, setAlertType] = React.useState('')
+  const [alertText, setAlertText] = React.useState('')
   const [loggedInUser, setLoggedInUser] = React.useState('')
   const [detailsToEdit, setDetailsToEdit] = React.useState('')
   const [settings, setSettings] = React.useState({})
@@ -111,23 +115,23 @@ export default function EditProduct({
   function handleChange(event) {
     const value = event.target.value
     const columnName = event.target.id
-    if (event.target.type === 'number') {
-      const parsedValue = parseFloat(value)
-      setDetailsToEdit({ ...detailsToEdit, [columnName]: parsedValue })
-    } else {
-      setDetailsToEdit({ ...detailsToEdit, [columnName]: value })
-    }
+    setDetailsToEdit({ ...detailsToEdit, [columnName]: value })
   }
 
-  function handlePricesChange(event, PriceIndex) {
-    const value = parseFloat(event.target.value)
+  function handleStatusChange(event) {
+    const value = event.target.value
+    setDetailsToEdit({ ...detailsToEdit, status: value })
+  }
+
+  function handlePricesChange(event, priceIndex) {
+    const value = event.target.value
+
     const updatedPrices = detailsToEdit.sellingPrices.map((price, index) => {
-      if (index === PriceIndex) {
+      if (index === priceIndex) {
         return { ...price, price: value }
       }
       return price
     })
-
     setDetailsToEdit({ ...detailsToEdit, sellingPrices: updatedPrices })
   }
 
@@ -229,6 +233,12 @@ export default function EditProduct({
             </DialogActions>
           </Dialog>
         </Backdrop>
+        <AlertDisplay
+          alertOpen={alertOpen}
+          setAlertOpen={setAlertOpen}
+          alertText={alertText}
+          alertType={alertType}
+        />
         <form onSubmit={handleSubmit}>
           <Grid
             container
@@ -300,20 +310,24 @@ export default function EditProduct({
             </Grid>
             <Grid item>
               <TextField
+                required
                 id="saleUnit"
                 label="SALES UNIT"
                 size="small"
                 type="number"
+                inputProps={{ min: 0 }}
                 value={detailsToEdit.saleUnit}
                 onChange={handleChange}
               />
             </Grid>
             <Grid item>
               <TextField
+                required
                 id="startQty"
                 label="INITIAL QTY"
                 size="small"
                 type="number"
+                inputProps={{ min: 0 }}
                 value={detailsToEdit.startQty}
                 onChange={handleChange}
               />
@@ -334,7 +348,7 @@ export default function EditProduct({
                 size="small"
                 id="status"
                 value={detailsToEdit.status}
-                onChange={handleChange}
+                onChange={handleStatusChange}
                 autoWidth
               >
                 <MenuItem value="active">active</MenuItem>

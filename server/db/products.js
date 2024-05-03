@@ -27,16 +27,21 @@ function getPrices(db = connection) {
 }
 
 function addProduct(productDetails, db = connection) {
+  const unitCost = parseFloat(productDetails.unitCost)
+  const saleUnit = parseFloat(productDetails.saleUnit)
+  const startQty = parseFloat(productDetails.startQty)
+  const adjQty = parseFloat(productDetails.adjQty)
+
   return db('products').insert({
     product_name: productDetails.productName,
     description: productDetails.description,
     category_id: productDetails.categoryId,
     category_name: productDetails.categoryName,
-    unit_cost: productDetails.unitCost,
-    sale_unit: productDetails.saleUnit,
-    start_qty: productDetails.startQty,
+    unit_cost: unitCost,
+    sale_unit: saleUnit,
+    start_qty: startQty,
     status: productDetails.status,
-    adj_qty: productDetails.adjQty,
+    adj_qty: adjQty,
   })
 }
 
@@ -63,6 +68,8 @@ function updatePrice(newPrices, db = connection) {
 }
 
 function addPrice(newPrice, db = connection) {
+  const price = parseFloat(newPrice.price)
+  const level = parseInt(newPrice.level)
   return db('selling_prices').insert({
     product_id: newPrice.productId,
     price: newPrice.price,
