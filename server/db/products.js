@@ -17,6 +17,25 @@ function getProducts(db = connection) {
   )
 }
 
+function getActiveProducts(db = connection) {
+  return db('products')
+    .select(
+      'id',
+      'product_name as productName',
+      'description',
+      'category_id as categoryId',
+      'category_name as categoryName',
+      'unit_cost as unitCost',
+      'sale_unit as saleUnit',
+      'sold_qty as soldQty',
+      'bought_qty as boughtQty',
+      'start_qty as startQty',
+      'adj_qty as adjQty',
+      'status'
+    )
+    .where('status', 'active')
+}
+
 function getPrices(db = connection) {
   return db('selling_prices').select(
     'id',
@@ -46,27 +65,29 @@ function addProduct(productDetails, db = connection) {
 }
 
 function updateProduct(newProductDetails, db = connection) {
-  const unitCost = parseFloat(productDetails.unitCost)
-  const saleUnit = parseFloat(productDetails.saleUnit)
-  const startQty = parseFloat(productDetails.startQty)
-  const adjQty = parseFloat(productDetails.adjQty)
+  const unitCost = parseFloat(newProductDetails.unitCost)
+  const saleUnit = parseFloat(newProductDetails.saleUnit)
+  const startQty = parseFloat(newProductDetails.startQty)
+  const adjQty = parseFloat(newProductDetails.adjQty)
 
-  return db('products').update({
-    product_name: newProductDetails.productName,
-    description: newProductDetails.description,
-    category_id: newProductDetails.categoryId,
-    category_name: newProductDetails.categoryName,
-    bought_qty: newProductDetails.boughtQty,
-    unit_cost: unitCost,
-    sale_unit: saleUnit,
-    start_qty: startQty,
-    adj_qty: adjQty,
-    status: newProductDetails.status,
-  })
+  return db('products')
+    .update({
+      product_name: newProductDetails.productName,
+      description: newProductDetails.description,
+      category_id: newProductDetails.categoryId,
+      category_name: newProductDetails.categoryName,
+      bought_qty: newProductDetails.boughtQty,
+      unit_cost: unitCost,
+      sale_unit: saleUnit,
+      start_qty: startQty,
+      adj_qty: adjQty,
+      status: newProductDetails.status,
+    })
+    .where('id', newProductDetails.id)
 }
 
 function updatePrice(newPrices, db = connection) {
-  const price = parseFloat(newPrice.price)
+  const price = parseFloat(newPrices.price)
   return db('selling_prices').update({ price: price }).where('id', newPrices.id)
 }
 
@@ -88,6 +109,7 @@ function getNewId(db = connection) {}
 
 module.exports = {
   getProducts,
+  getActiveProducts,
   addProduct,
   updateProduct,
   deleteProduct,

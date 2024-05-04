@@ -14,6 +14,7 @@ import {
   Radio,
   Select,
   MenuItem,
+  FormControl,
 } from '@mui/material'
 
 function Pos() {
@@ -23,21 +24,40 @@ function Pos() {
   const [settings, setSettings] = React.useState([])
   const [purchasedList, setPurchasedList] = React.useState([])
   const [labelName, setLabelName] = React.useState('Barcode')
+  const [priceLevels, setPriceLevels] = React.useState([])
+  const [selectedPriceLevel, setSelectedPriceLevel] = React.useState(1)
 
   React.useEffect(() => {
     getProducts()
     getSettings()
+      .then((res) => {
+        setPriceLevelDisplay(res.priceLevels)
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error(
+          `error occured while loading price level setting, error: ${error}`
+        )
+      })
   }, [])
 
   async function getProducts() {
     const products = await productApis.getProducts()
     setProductList(products)
-    setIsLoading(false)
   }
 
   async function getSettings() {
     const settings = await settingApis.getSettings()
-    setSettings(settings)
+    return settings
+    // setSettings(settings)
+  }
+
+  function setPriceLevelDisplay(setPriceLevel) {
+    const tempPriceLevels = []
+    for (let i = 1; i <= setPriceLevel; i++) {
+      tempPriceLevels.push(i)
+    }
+    setPriceLevels(tempPriceLevels)
   }
 
   async function handleProductSelect(event) {
@@ -94,6 +114,11 @@ function Pos() {
     setLabelName(serachType)
   }
 
+  function handlePriceLevelChange(event) {
+    const selectedValue = event.target.value
+    setSelectedPriceLevel(selectedValue)
+  }
+
   if (isLoading) {
     return (
       <Backdrop
@@ -106,31 +131,53 @@ function Pos() {
   } else {
     return (
       <Container maxWidth="100vw">
-        <Grid container columnSpacing={2}>
+        <Grid container justifyContent="space-between">
           <Grid item>
-            <TextField
-              label={labelName}
-              size="small"
-              autoFocus
-              sx={{ marginBottom: '20px' }}
-              value={productBarcode}
-              onChange={handleBarcodeChange}
-              onKeyDown={handleProductSelect}
-            />
+            <Grid container direction="row" columnSpacing={2}>
+              <Grid item>
+                <TextField
+                  label={labelName}
+                  size="small"
+                  autoFocus
+                  sx={{ marginBottom: '20px' }}
+                  value={productBarcode}
+                  onChange={handleBarcodeChange}
+                  onKeyDown={handleProductSelect}
+                />
+              </Grid>
+              <Grid item>
+                <RadioGroup row onChange={handleSelect} defaultValue="Barcode">
+                  <FormControlLabel
+                    value="Barcode"
+                    control={<Radio />}
+                    label="Barcode"
+                  />
+                  <FormControlLabel
+                    value="Searach"
+                    control={<Radio />}
+                    label="Search"
+                  />
+                </RadioGroup>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item>
-            <RadioGroup row onChange={handleSelect} defaultValue="Barcode">
-              <FormControlLabel
-                value="Barcode"
-                control={<Radio />}
-                label="Barcode"
-              />
-              <FormControlLabel
-                value="Searach"
-                control={<Radio />}
-                label="Search"
-              />
-            </RadioGroup>
+            <Select
+              labelId="price-level"
+              size="small"
+              id="price-level"
+              value={selectedPriceLevel}
+              onChange={handlePriceLevelChange}
+              autoWidth
+            >
+              {priceLevels?.map((level) => {
+                return (
+                  <MenuItem key={level} value={level}>
+                    {level}
+                  </MenuItem>
+                )
+              })}
+            </Select>
           </Grid>
         </Grid>
         <Grid container>

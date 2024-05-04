@@ -24,6 +24,26 @@ router.get('/get-list', async (req, res) => {
   }
 })
 
+router.get('/get-active-products', async (req, res) => {
+  try {
+    const activeProducts = await db.getActiveProducts()
+    const prices = await db.getPrices()
+
+    const response = await products.map((product) => {
+      product.sellingPrices = new Array()
+      prices.map((price) => {
+        if (price.productId == product.id) {
+          product.sellingPrices.push(price)
+        }
+      })
+      return product
+    })
+    res.json(response)
+  } catch (error) {
+    console.error(error)
+  }
+})
+
 router.put('/update', async (req, res) => {
   try {
     const productDetails = req.body

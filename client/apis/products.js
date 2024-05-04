@@ -14,6 +14,21 @@ export async function getProducts() {
   }
 }
 
+export async function getActiveProducts() {
+  try {
+    const response = await fetch('api/product/get-active-products', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    const josn = await response.json()
+    return json
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function updateProduct(productDetails) {
   try {
     const response = await fetch('api/products/update', {
