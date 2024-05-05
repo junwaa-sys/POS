@@ -13,6 +13,7 @@ exports.up = function (knex) {
     table.string('policy')
     table.integer('price_levels')
     table.integer('number_of_pos')
+    table.double('tax_rate')
   })
 }
 
@@ -21,5 +22,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTable('receipt_settings')
+  return knex.schema.dropTable('pos_settings')
 }

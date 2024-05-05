@@ -19,9 +19,9 @@ import {
 
 function Pos() {
   const [isLoading, setIsLoading] = React.useState(true)
-  const [productBarcode, setProductBarcode] = React.useState('')
+
+  const [searchValue, setSearchValue] = React.useState('')
   const [productList, setProductList] = React.useState([])
-  const [settings, setSettings] = React.useState([])
   const [purchasedList, setPurchasedList] = React.useState([])
   const [labelName, setLabelName] = React.useState('Barcode')
   const [priceLevels, setPriceLevels] = React.useState([])
@@ -42,7 +42,7 @@ function Pos() {
   }, [])
 
   async function getProducts() {
-    const products = await productApis.getProducts()
+    const products = await productApis.getActiveProducts()
     setProductList(products)
   }
 
@@ -60,7 +60,15 @@ function Pos() {
     setPriceLevels(tempPriceLevels)
   }
 
-  async function handleProductSelect(event) {
+  function calTotalDisc(qty, unitPrice, disc, discPercent) {
+    const totalDisc = (
+      Number(disc) +
+      Math.round(qty * unitPrice * discPercent) / 100
+    ).toFixed(2)
+    return totalDisc
+  }
+
+  async function handleSearch(event) {
     const pressedKey = event.key
     const productId = parseInt(event.target.value)
 
@@ -68,22 +76,41 @@ function Pos() {
       const selectedProduct = await productList.filter(
         (product) => product.id == productId
       )
-
-      const duplication = await purchasedList.filter(
-        (product) => product.id == productId
+      const unitPrice = selectedProduct[0].sellingPrices.filter(
+        (price) => price.level === selectedPriceLevel
       )
 
-      if (duplication.length > 0) {
-        setPurchasedList((arr) => {
-          arr.map((ele) => {
-            if (ele.id === productId) {
-              ele.qty += 1
-            }
-            return ele
+      if (purchasedList.length > 0) {
+        const duplication = await purchasedList.filter(
+          (product) => product.id == productId
+        )
+
+        if (duplication.length > 0) {
+          setPurchasedList((arr) => {
+            arr.map((ele) => {
+              if (ele.id === productId) {
+                ele.qty += 1
+                ele.totalPrice = (ele.qty * ele.unitPrice).toFixed(2)
+              }
+              return ele
+            })
+            return arr
           })
-          console.log(arr)
-          return arr
-        })
+        } else {
+          setPurchasedList([
+            ...purchasedList,
+            {
+              id: selectedProduct[0].id,
+              productName: selectedProduct[0].productName,
+              qty: 1,
+              unitPrice: unitPrice[0].price.toFixed(2),
+              disc: (0.0).toFixed(2),
+              discPercent: (0.0).toFixed(2),
+              totalDisc: (0.0).toFixed(2),
+              totalPrice: unitPrice[0].price.toFixed(2),
+            },
+          ])
+        }
       } else {
         setPurchasedList([
           ...purchasedList,
@@ -91,15 +118,21 @@ function Pos() {
             id: selectedProduct[0].id,
             productName: selectedProduct[0].productName,
             qty: 1,
+            unitPrice: unitPrice[0].price.toFixed(2),
+            disc: (0.0).toFixed(2),
+            discPercent: (0.0).toFixed(2),
+            totalDisc: (0.0).toFixed(2),
+            totalPrice: unitPrice[0].price.toFixed(2),
           },
         ])
       }
-      setProductBarcode('')
+
+      setSearchValue('')
     }
   }
 
-  function handleBarcodeChange(event) {
-    setProductBarcode(event.target.value)
+  function handleSearchChange(event) {
+    setSearchValue(event.target.value)
   }
 
   function handleChangePurchase(event, index) {
@@ -117,6 +150,51 @@ function Pos() {
   function handlePriceLevelChange(event) {
     const selectedValue = event.target.value
     setSelectedPriceLevel(selectedValue)
+  }
+
+  function handleDiscPercentChange(event, productId) {
+    //apply changed on discount percent to total discount and calculate new total price
+    const newPercent = Number(event.target.value)
+
+    const tempPurchaseList = purchasedList.map((purchase) => {
+      if (purchase.id === productId) {
+        purchase.discPercent = newPercent
+        purchase.totalDisc = calTotalDisc(
+          purchase.qty,
+          purchase.unitPrice,
+          purchase.disc,
+          newPercent
+        )
+        purchase.totalPrice = (
+          purchase.unitPrice * purchase.qty -
+          purchase.totalDisc
+        ).toFixed(2)
+      }
+      return purchase
+    })
+    setPurchasedList(tempPurchaseList)
+  }
+
+  function handleDiscChange(event, productId) {
+    //apply change on discount by amount, calculate total discount and total price
+    const newDisc = Number(event.target.value)
+    const tempPurchaseList = purchasedList.map((purchase) => {
+      if (purchase.id === productId) {
+        purchase.disc = newDisc
+        purchase.totalDisc = calTotalDisc(
+          purchase.qty,
+          purchase.unitPrice,
+          newDisc,
+          purchase.discPercent
+        )
+        purchase.totalPrice = (
+          purchase.unitPrice * purchase.qty -
+          purchase.totalDisc
+        ).toFixed(2)
+      }
+      return purchase
+    })
+    setPurchasedList(tempPurchaseList)
   }
 
   if (isLoading) {
@@ -140,9 +218,9 @@ function Pos() {
                   size="small"
                   autoFocus
                   sx={{ marginBottom: '20px' }}
-                  value={productBarcode}
-                  onChange={handleBarcodeChange}
-                  onKeyDown={handleProductSelect}
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  onKeyDown={handleSearch}
                 />
               </Grid>
               <Grid item>
@@ -180,12 +258,16 @@ function Pos() {
             </Select>
           </Grid>
         </Grid>
-        <Grid container>
-          <PurchaseList
-            purchasedList={purchasedList}
-            setPurchaseList={setPurchasedList}
-            handleChangePurchase={handleChangePurchase}
-          />
+        <Grid container direction="row" columnSpacing={2}>
+          <Grid item xs={8}>
+            <PurchaseList
+              purchasedList={purchasedList}
+              setPurchaseList={setPurchasedList}
+              handleChangePurchase={handleChangePurchase}
+              handleDiscPercentChange={handleDiscPercentChange}
+              handleDiscChange={handleDiscChange}
+            />
+          </Grid>
         </Grid>
       </Container>
     )

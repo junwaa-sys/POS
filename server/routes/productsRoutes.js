@@ -29,7 +29,7 @@ router.get('/get-active-products', async (req, res) => {
     const activeProducts = await db.getActiveProducts()
     const prices = await db.getPrices()
 
-    const response = await products.map((product) => {
+    const response = await activeProducts.map((product) => {
       product.sellingPrices = new Array()
       prices.map((price) => {
         if (price.productId == product.id) {
